@@ -1,36 +1,33 @@
 import AppShell from "@/components/ui/AppShell";
-import PrimaryAction from "@/components/ui/PrimaryAction";
-import Surface from "@/components/ui/Surface";
-import ProgressMenu from "@/components/workouts/ProgressMenu";
+import HomeHero from "@/components/dashboard/HomeHero";
+import LastSessionCard from "@/components/dashboard/LastSessionCard";
+import QuickAccessGrid from "@/components/dashboard/QuickAccessGrid";
+import RecentActivityList from "@/components/dashboard/RecentActivityList";
+import TodayWorkoutCard from "@/components/dashboard/TodayWorkoutCard";
+import WeeklyProgressCard from "@/components/dashboard/WeeklyProgressCard";
 
 export default function Home() {
   return (
     <AppShell>
-      <section className="flex min-h-[calc(100vh-48px)] flex-col justify-between">
-        <div className="pt-8 sm:pt-14">
-          <p className="text-3xl font-semibold tracking-normal text-white sm:text-5xl">
-            Buenos días, Edeiver 👋
-          </p>
+      <div className="grid gap-10 py-8 sm:gap-14 sm:py-14">
+        <HomeHero />
 
-          <div className="mt-12">
-            <p className="text-sm font-medium uppercase tracking-[0.28em] text-zinc-500">
-              Proyecto activo
-            </p>
-            <h1 className="mt-4 text-5xl font-semibold tracking-normal text-white sm:text-7xl">
-              Proyecto Hércules
-            </h1>
-            <p className="mt-5 text-xl font-medium text-[#9fb7ff]">Semana 1</p>
-          </div>
+        <TodayWorkoutCard />
 
-          <PrimaryAction href="/workouts/pecho-triceps" className="mt-12">
-            ▶ Continuar entrenamiento
-          </PrimaryAction>
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+          <WeeklyProgressCard />
+          <LastSessionCard />
         </div>
 
-        <Surface className="mb-2 mt-12">
-          <ProgressMenu />
-        </Surface>
-      </section>
+        <div className="grid gap-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+            Accesos rápidos
+          </p>
+          <QuickAccessGrid />
+        </div>
+
+        <RecentActivityList />
+      </div>
     </AppShell>
   );
 }

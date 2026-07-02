@@ -3,7 +3,7 @@
 import Surface from "@/components/ui/Surface";
 import MediaPlaceholder from "@/components/workouts/MediaPlaceholder";
 
-export default function AnatomyPanel() {
+export default function AnatomyPanel({ exercise }) {
   return (
     <Surface id="anatomia" className="scroll-mt-24 grid gap-6">
       <div>
@@ -23,7 +23,7 @@ export default function AnatomyPanel() {
               Músculo principal
             </p>
             <p className="mt-2 text-xl font-semibold text-white">
-              Pectoral superior
+              {exercise.muscles.primary}
             </p>
           </div>
           <div className="rounded-[24px] bg-white/[0.05] p-5">
@@ -31,13 +31,11 @@ export default function AnatomyPanel() {
               Músculos secundarios
             </p>
             <p className="mt-2 text-xl font-semibold text-white">
-              Tríceps y deltoide anterior
+              {exercise.muscles.secondary}
             </p>
           </div>
           <p className="text-base leading-7 text-zinc-300">
-            Este ejercicio abre la sesión porque permite cargar con estabilidad
-            y priorizar el pecho superior cuando el sistema nervioso está fresco.
-            También prepara tríceps y hombros para el resto del entrenamiento.
+            {exercise.anatomyNote}
           </p>
         </div>
       </div>

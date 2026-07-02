@@ -15,7 +15,7 @@ const workouts = [
     focus: "Construir fuerza de tracción y densidad.",
     duration: "70 min",
     week: "Semana 1",
-    href: "/workouts/pecho-triceps",
+    href: "/workouts/espalda-biceps",
   },
   {
     title: "Pierna",

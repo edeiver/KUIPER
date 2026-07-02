@@ -1,0 +1,8 @@
+{
+  "version":"0.1.0",
+  "currentSprint":"Workout MVP",
+  "backend":false,
+  "authentication":false,
+  "storage":"local",
+  "next":"Workout Engine"
+}

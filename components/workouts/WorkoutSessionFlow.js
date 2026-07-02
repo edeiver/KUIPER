@@ -15,80 +15,110 @@ import SessionDock from "@/components/workouts/SessionDock";
 import TechniquePanel from "@/components/workouts/TechniquePanel";
 import { appendWorkoutSession, appendWorkoutSet } from "@/utils/workoutStorage";
 
-const workoutPlan = {
+const pechoTricepsPlan = {
   title: "Pecho + Tríceps",
   exercises: [
     {
       name: "Press inclinado con mancuernas",
       objective: "Más carga.",
       weight: 24,
+      sets: 4,
       reps: "8 - 10",
       repsCompleted: 10,
       rir: "2",
       tempo: "3-1-1",
       restSeconds: 120,
       coach: "Baja lento durante 3 segundos y evita despegar los hombros del banco.",
-      muscles: "Pecho superior, tríceps, deltoide anterior",
+      muscles: { primary: "Pectoral superior", secondary: "Tríceps y deltoide anterior" },
+      anatomyNote:
+        "Este ejercicio abre la sesión porque permite cargar con estabilidad y priorizar el pecho superior cuando el sistema nervioso está fresco. También prepara tríceps y hombros para el resto del entrenamiento.",
+      technique: {
+        title: "Press inclinado limpio y controlado",
+        steps: [
+          "Ajusta el banco entre 30 y 45 grados.",
+          "Apoya hombros y espalda alta de forma estable.",
+          "Baja las mancuernas en 3 segundos con control.",
+          "Pausa brevemente abajo sin perder tensión.",
+          "Empuja hacia arriba sin chocar las mancuernas.",
+        ],
+        mistakes: [
+          "Arquear demasiado la espalda.",
+          "Bajar sin control por exceso de peso.",
+          "Despegar los hombros del banco.",
+          "Convertir el movimiento en press vertical.",
+        ],
+        cues: [
+          "Hombros pegados al banco",
+          "Baja en 3 segundos",
+          "Pausa abajo sin rebotar",
+          "Empuja con pecho, no con hombros",
+        ],
+      },
     },
     {
       name: "Press plano en máquina",
       objective: "Más estabilidad.",
       weight: 30,
+      sets: 4,
       reps: "8 - 10",
       repsCompleted: 10,
       rir: "2",
       tempo: "2-1-1",
       restSeconds: 120,
       coach: "Asegura una línea de empuje consistente en cada repetición.",
-      muscles: "Pecho medio, tríceps, deltoide anterior",
+      muscles: { primary: "Pecho medio", secondary: "Tríceps, deltoide anterior" },
     },
     {
       name: "Aperturas en polea",
       objective: "Más tensión.",
       weight: 14,
+      sets: 3,
       reps: "12 - 15",
       repsCompleted: 12,
       rir: "2",
       tempo: "3-1-2",
       restSeconds: 90,
       coach: "Conserva el arco suave y siente el pecho trabajando todo el recorrido.",
-      muscles: "Pecho, deltoide anterior",
+      muscles: { primary: "Pecho", secondary: "Deltoide anterior" },
     },
     {
       name: "Fondos asistidos",
       objective: "Más control.",
       weight: 18,
+      sets: 3,
       reps: "8 - 12",
       repsCompleted: 10,
       rir: "1 - 2",
       tempo: "2-1-1",
       restSeconds: 120,
       coach: "No colapses en el fondo y mantén el torso estable.",
-      muscles: "Pecho inferior, tríceps, hombro anterior",
+      muscles: { primary: "Pecho inferior", secondary: "Tríceps, hombro anterior" },
     },
     {
       name: "Extensión de tríceps en cuerda",
       objective: "Más contracción.",
       weight: 18,
+      sets: 3,
       reps: "10 - 12",
       repsCompleted: 12,
       rir: "2",
       tempo: "2-1-1",
       restSeconds: 75,
       coach: "Separa la cuerda al final sin perder el control del codo.",
-      muscles: "Tríceps, antebrazo",
+      muscles: { primary: "Tríceps", secondary: "Antebrazo" },
     },
     {
       name: "Press francés",
       objective: "Cerrar con precisión.",
       weight: 16,
+      sets: 3,
       reps: "10 - 12",
       repsCompleted: 10,
       rir: "1 - 2",
       tempo: "3-1-1",
       restSeconds: 90,
       coach: "Mantén los codos alineados y la bajada controlada.",
-      muscles: "Tríceps, deltoide anterior",
+      muscles: { primary: "Tríceps", secondary: "Deltoide anterior" },
     },
   ],
 };
@@ -114,36 +144,36 @@ function ExerciseSummaryRow({ label, value, emphasis = false }) {
   );
 }
 
-function WorkoutPreview({ onStartTraining }) {
+function WorkoutPreview({ onStartTraining, plan }) {
+  const exercise = plan.exercises[0];
+  const totalExercises = plan.exercises.length;
+
   return (
     <div className="grid gap-6 pb-32 pt-8">
       <SectionTitle
-        eyebrow="Ejercicio 1 de 6"
-        title={workoutPlan.exercises[0].name}
+        eyebrow={`Ejercicio 1 de ${totalExercises}`}
+        title={exercise.name}
         subtitle="Una sesión guiada para ejecutar mejor, controlar la intensidad y progresar sin perder técnica."
       />
 
-      <ExerciseProgress />
-      <SessionCommand onStartTraining={onStartTraining} />
-      <ReadinessStrip />
+      <ExerciseProgress exerciseIndex={0} totalExercises={totalExercises} />
+      <SessionCommand exercise={exercise} onStartTraining={onStartTraining} />
+      <ReadinessStrip exercise={exercise} />
 
       <section className="grid gap-4 sm:grid-cols-2">
         <InsightCard title="Objetivo de hoy">
           Hoy queremos progresar en peso manteniendo la técnica. Si completas
-          las cuatro series con RIR correcto, aumenta el peso la próxima semana.
+          todas las series con el RIR indicado, aumenta el peso la próxima semana.
         </InsightCard>
-        <InsightCard title="Coach">
-          Recuerda bajar el peso lentamente durante 3 segundos y evitar
-          despegar los hombros del banco.
-        </InsightCard>
+        <InsightCard title="Coach">{exercise.coach}</InsightCard>
       </section>
 
       <ExerciseTabs />
 
-      <TechniquePanel />
-      <MyTrainingPanel />
-      <AnatomyPanel />
-      <SessionDock />
+      <TechniquePanel exercise={exercise} />
+      <MyTrainingPanel exercise={exercise} />
+      <AnatomyPanel exercise={exercise} />
+      <SessionDock exercise={exercise} />
     </div>
   );
 }
@@ -350,7 +380,7 @@ function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyC
   );
 }
 
-export default function WorkoutSessionFlow() {
+export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
   const [mode, setMode] = useState("preview");
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setIndex, setSetIndex] = useState(0);
@@ -364,8 +394,8 @@ export default function WorkoutSessionFlow() {
   const [energy, setEnergy] = useState("Alta");
   const [pendingTransitionIndex, setPendingTransitionIndex] = useState(null);
 
-  const currentExercise = workoutPlan.exercises[exerciseIndex];
-  const nextExercise = workoutPlan.exercises[exerciseIndex + 1];
+  const currentExercise = plan.exercises[exerciseIndex];
+  const nextExercise = plan.exercises[exerciseIndex + 1];
 
   useEffect(() => {
     if (mode === "preview") {
@@ -393,7 +423,7 @@ export default function WorkoutSessionFlow() {
           setSetStartedAt(Date.now());
           setPhase("training");
           setRestEndsAt(null);
-        } else if (exerciseIndex < workoutPlan.exercises.length - 1) {
+        } else if (exerciseIndex < plan.exercises.length - 1) {
           setPendingTransitionIndex(exerciseIndex + 1);
           setPhase("transition");
           setRestEndsAt(null);
@@ -406,7 +436,7 @@ export default function WorkoutSessionFlow() {
 
     const timer = window.setInterval(tick, 250);
     return () => window.clearInterval(timer);
-  }, [currentExercise.sets, exerciseIndex, phase, restEndsAt, setIndex]);
+  }, [currentExercise.sets, exerciseIndex, phase, restEndsAt, setIndex, plan]);
 
   useEffect(() => {
     if (phase !== "transition" || pendingTransitionIndex === null) {
@@ -431,8 +461,8 @@ export default function WorkoutSessionFlow() {
   const sessionSummary = useMemo(() => {
     const totalSetsCompleted =
       phase === "completed"
-        ? workoutPlan.exercises.reduce((sum, exercise) => sum + exercise.sets, 0)
-        : workoutPlan.exercises.reduce((sum, exercise, index) => {
+        ? plan.exercises.reduce((sum, exercise) => sum + exercise.sets, 0)
+        : plan.exercises.reduce((sum, exercise, index) => {
             if (index < exerciseIndex) {
               return sum + exercise.sets;
             }
@@ -446,11 +476,11 @@ export default function WorkoutSessionFlow() {
 
     const totalVolumeCompleted =
       phase === "completed"
-        ? workoutPlan.exercises.reduce(
+        ? plan.exercises.reduce(
             (sum, exercise) => sum + exercise.sets * exercise.weight * exercise.repsCompleted,
             0,
           )
-        : workoutPlan.exercises.reduce((sum, exercise, index) => {
+        : plan.exercises.reduce((sum, exercise, index) => {
             if (index < exerciseIndex) {
               return sum + exercise.sets * exercise.weight * exercise.repsCompleted;
             }
@@ -465,10 +495,10 @@ export default function WorkoutSessionFlow() {
     return {
       totalVolume: totalVolumeCompleted,
       totalSets: totalSetsCompleted,
-      completedExercises: phase === "completed" ? workoutPlan.exercises.length : exerciseIndex + 1,
+      completedExercises: phase === "completed" ? plan.exercises.length : exerciseIndex + 1,
       totalTime: sessionStartedAt ? formatSeconds(Math.max(Math.floor((now - sessionStartedAt) / 1000), 0)) : "0:00",
     };
-  }, [exerciseIndex, now, phase, sessionStartedAt, setIndex]);
+  }, [exerciseIndex, now, phase, sessionStartedAt, setIndex, plan]);
 
   useEffect(() => {
     if (phase === "training" && sessionStartedAt === null) {
@@ -521,10 +551,10 @@ export default function WorkoutSessionFlow() {
     appendWorkoutSession({
       date: new Date().toISOString(),
       durationSeconds: sessionStartedAt ? Math.max(Math.ceil((Date.now() - sessionStartedAt) / 1000), 1) : 0,
-      workout: workoutPlan.title,
+      workout: plan.title,
       totalSets: sessionSummary.totalSets,
       totalVolume: sessionSummary.totalVolume,
-      exercises: workoutPlan.exercises.map((exercise) => exercise.name),
+      exercises: plan.exercises.map((exercise) => exercise.name),
       comments,
       energy,
       calories: null,
@@ -535,7 +565,7 @@ export default function WorkoutSessionFlow() {
   if (mode === "preview") {
     return (
       <AppShell>
-        <WorkoutPreview onStartTraining={startTraining} />
+        <WorkoutPreview onStartTraining={startTraining} plan={plan} />
       </AppShell>
     );
   }

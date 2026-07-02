@@ -1,11 +1,4 @@
-const cues = [
-  "Hombros pegados al banco",
-  "Baja en 3 segundos",
-  "Pausa abajo sin rebotar",
-  "Empuja con pecho, no con hombros",
-];
-
-export default function CoachChecklist() {
+export default function CoachChecklist({ cues }) {
   return (
     <div className="grid gap-3">
       {cues.map((cue, index) => (

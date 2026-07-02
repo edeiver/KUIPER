@@ -1,13 +1,13 @@
  "use client";
 
-const items = [
-  ["Técnica", "Controlada"],
-  ["Rango", "Completo"],
-  ["Intensidad", "RIR 2"],
-  ["Siguiente", "120 s"],
-];
+export default function ReadinessStrip({ exercise }) {
+  const items = [
+    ["Técnica", "Controlada"],
+    ["Rango", "Completo"],
+    ["Intensidad", `RIR ${exercise.rir}`],
+    ["Siguiente", `${exercise.restSeconds} s`],
+  ];
 
-export default function ReadinessStrip() {
   return (
     <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {items.map(([label, value]) => (
