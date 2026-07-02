@@ -17,7 +17,7 @@ const espaldaBicepsPlan = {
       muscles: { primary: "Dorsal ancho", secondary: "Bíceps, redondo mayor" },
       alternatives: ["Dominadas asistidas", "Jalón neutro"],
       anatomyNote:
-        "Este ejercicio abre la sesión porque permite activar el dorsal ancho con una curva de aprendizaje sencilla y buena estabilidad, antes de pasar a movimientos de remo más exigentes técnicamente.",
+        "Este ejercicio abre la sesión porque permite activar el dorsal ancho con una curva de aprendizaje sencilla y buena estabilidad, antes de pasar a otros ángulos de tracción más exigentes técnicamente.",
       technique: {
         title: "Jalón al pecho con técnica limpia",
         steps: [
@@ -42,20 +42,6 @@ const espaldaBicepsPlan = {
       },
     },
     {
-      name: "Remo sentado en máquina",
-      objective: "Más densidad.",
-      weight: 40,
-      sets: 4,
-      reps: "8 - 10",
-      repsCompleted: 10,
-      rir: "2",
-      tempo: "2-1-2",
-      restSeconds: 120,
-      coach: "Máquina convergente: puedes trabajar ambos brazos a la vez o de forma unilateral. Junta los omóplatos al final del recorrido sin usar impulso de cadera.",
-      muscles: { primary: "Dorsal medio", secondary: "Romboides, bíceps" },
-      alternatives: ["Remo con mancuerna", "Remo en polea baja", "Remo con barra T"],
-    },
-    {
       name: "Jalón agarre cerrado (triángulo)",
       objective: "Más contracción dorsal.",
       weight: 35,
@@ -68,6 +54,20 @@ const espaldaBicepsPlan = {
       coach: "Lleva el triángulo hacia la parte alta del pecho manteniendo los codos cerca del cuerpo.",
       muscles: { primary: "Dorsal ancho", secondary: "Bíceps, dorsal medio" },
       alternatives: ["Jalón unilateral", "Jalón neutro"],
+    },
+    {
+      name: "Remo sentado en máquina",
+      objective: "Más densidad.",
+      weight: 40,
+      sets: 4,
+      reps: "8 - 10",
+      repsCompleted: 10,
+      rir: "2",
+      tempo: "2-1-2",
+      restSeconds: 120,
+      coach: "Máquina convergente: puedes trabajar ambos brazos a la vez o de forma unilateral. Junta los omóplatos al final del recorrido sin usar impulso de cadera.",
+      muscles: { primary: "Dorsal medio", secondary: "Romboides, bíceps" },
+      alternatives: ["Remo con mancuerna", "Remo en polea baja", "Remo con barra T"],
     },
     {
       name: "Pullover en polea",

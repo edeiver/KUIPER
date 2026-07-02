@@ -6,8 +6,8 @@ import ExerciseList from "@/components/workouts/ExerciseList";
 
 const exercises = [
   "Jalón al pecho",
-  "Remo sentado en máquina",
   "Jalón agarre cerrado (triángulo)",
+  "Remo sentado en máquina",
   "Pullover en polea",
   "Curl predicador",
   "Curl martillo",
