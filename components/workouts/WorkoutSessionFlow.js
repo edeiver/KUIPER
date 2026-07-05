@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import AppShell from "@/components/ui/AppShell";
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import SectionTitle from "@/components/ui/SectionTitle";
+import Surface from "@/components/ui/Surface";
 import AnatomyPanel from "@/components/workouts/AnatomyPanel";
 import ExerciseProgress from "@/components/workouts/ExerciseProgress";
 import ExerciseTabs from "@/components/workouts/ExerciseTabs";
 import InsightCard from "@/components/workouts/InsightCard";
+import MediaPlaceholder from "@/components/workouts/MediaPlaceholder";
 import MyTrainingPanel from "@/components/workouts/MyTrainingPanel";
 import ReadinessStrip from "@/components/workouts/ReadinessStrip";
 import SessionCommand from "@/components/workouts/SessionCommand";
@@ -178,44 +181,147 @@ function WorkoutPreview({ onStartTraining, plan }) {
   );
 }
 
+function SetStatusBadge({ status }) {
+  const styles = {
+    completed: "border-[#9fb7ff]/30 bg-[#9fb7ff]/10 text-[#c8d5ff]",
+    active: "border-white/20 bg-white text-[#090a0d]",
+    pending: "border-white/10 bg-white/[0.04] text-zinc-500",
+  };
+  const labels = {
+    completed: "✔ Hecha",
+    active: "En curso",
+    pending: "Pendiente",
+  };
+
+  return (
+    <span
+      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold ${styles[status]}`}
+    >
+      {labels[status]}
+    </span>
+  );
+}
+
+function SetRow({ index, weight, reps, status }) {
+  return (
+    <div
+      className={`flex items-center gap-3 rounded-2xl border p-3.5 transition ${
+        status === "active"
+          ? "border-[#9fb7ff]/30 bg-[#9fb7ff]/10"
+          : "border-white/10 bg-white/[0.04]"
+      }`}
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/20 text-sm font-semibold text-white">
+        {index + 1}
+      </div>
+      <div className="grid flex-1 grid-cols-2 gap-2">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">Peso</p>
+          <p className="text-sm font-semibold text-white">{weight} kg</p>
+        </div>
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">Reps</p>
+          <p className="text-sm font-semibold text-white">{reps}</p>
+        </div>
+      </div>
+      <SetStatusBadge status={status} />
+    </div>
+  );
+}
+
 function TrainingScreen({
   exercise,
-  setNumber,
+  setIndex,
   totalSets,
+  phase,
+  exerciseIndex,
+  totalExercises,
   onCompleteSet,
+  onBack,
 }) {
+  const percent = Math.round(((exerciseIndex + 1) / totalExercises) * 100);
+  const completedThroughIndex = phase === "training" ? setIndex : setIndex + 1;
+
   return (
-    <div className="flex min-h-[calc(100vh-48px)] items-center justify-center py-8">
-      <section className="w-full max-w-xl rounded-[36px] border border-white/10 bg-white/[0.06] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-              Modo entrenamiento
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold text-white">
-              {exercise.name}
-            </h1>
-          </div>
-          <div className="rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm font-semibold text-white">
-            Serie {setNumber} de {totalSets}
-          </div>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
-          <ExerciseSummaryRow label="Peso recomendado" value={`${exercise.weight} kg`} emphasis />
-          <ExerciseSummaryRow label="Repeticiones objetivo" value={exercise.reps} />
-          <ExerciseSummaryRow label="RIR" value={exercise.rir} />
-          <ExerciseSummaryRow label="Tempo" value={exercise.tempo} />
-        </div>
-
+    <div className="pb-36">
+      <header className="sticky top-0 z-40 -mx-5 flex items-center justify-between gap-3 border-b border-white/10 bg-[#07080a]/90 px-5 py-4 backdrop-blur sm:-mx-8 sm:px-8">
         <button
           type="button"
-          onClick={onCompleteSet}
-          className="mt-6 flex min-h-16 w-full items-center justify-center rounded-[28px] bg-white px-6 text-base font-semibold text-[#090a0d] shadow-[0_24px_70px_rgba(255,255,255,0.18)] transition hover:bg-zinc-200"
+          onClick={onBack}
+          aria-label="Volver"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-lg text-white transition hover:bg-white/[0.09]"
         >
-          Completar serie
+          ←
         </button>
-      </section>
+        <div className="min-w-0 flex-1 text-center">
+          <p className="truncate text-base font-semibold text-white">{exercise.name}</p>
+          <p className="text-xs text-zinc-500">
+            {`Ejercicio ${exerciseIndex + 1} de ${totalExercises} · ${percent}%`}
+          </p>
+        </div>
+        <div className="h-10 w-10 shrink-0" aria-hidden="true" />
+      </header>
+
+      <div className="grid gap-5 pt-6">
+        <Surface className="grid gap-5 p-5">
+          <MediaPlaceholder
+            label="Vista del ejercicio"
+            variant="video"
+            className="min-h-72"
+          />
+
+          <div className="grid grid-cols-3 gap-3">
+            <ExerciseSummaryRow label="Peso" value={`${exercise.weight} kg`} emphasis />
+            <ExerciseSummaryRow label="Reps obj." value={exercise.reps} />
+            <ExerciseSummaryRow label="RIR" value={exercise.rir} />
+          </div>
+
+          <div className="rounded-[24px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#c8d5ff]">
+              Indicación del coach
+            </p>
+            <p className="mt-2 text-sm leading-6 text-zinc-200">{exercise.coach}</p>
+          </div>
+        </Surface>
+
+        <Surface className="grid gap-3 p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+              Series
+            </p>
+            <p className="text-xs font-semibold text-zinc-500">
+              {`Serie ${setIndex + 1} de ${totalSets}`}
+            </p>
+          </div>
+
+          <div className="grid gap-2.5">
+            {Array.from({ length: totalSets }).map((_, index) => {
+              const status =
+                index < completedThroughIndex
+                  ? "completed"
+                  : index === setIndex && phase === "training"
+                    ? "active"
+                    : "pending";
+
+              return (
+                <SetRow
+                  key={index}
+                  index={index}
+                  weight={exercise.weight}
+                  reps={exercise.reps}
+                  status={status}
+                />
+              );
+            })}
+          </div>
+        </Surface>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#07080a]/95 px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:px-8">
+        <div className="mx-auto w-full max-w-[430px] sm:max-w-5xl">
+          <PrimaryAction onClick={onCompleteSet}>Completar serie</PrimaryAction>
+        </div>
+      </div>
     </div>
   );
 }
@@ -245,57 +351,48 @@ function RestScreen({
   const displaySeconds = remainingSeconds > 5 ? formatSeconds(remainingSeconds) : String(Math.max(remainingSeconds, 0));
 
   return (
-    <div className="flex min-h-[calc(100vh-48px)] items-center justify-center py-8">
-      <section className="grid w-full max-w-2xl gap-6 rounded-[36px] border border-white/10 bg-white/[0.06] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center">
+      <section className="workout-pop grid w-full max-w-lg gap-5 rounded-[32px] border border-white/10 bg-[#101218] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.5)]">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
               Descanso
             </p>
-            <h2 className="mt-3 text-4xl font-semibold text-white">
+            <h2 className="mt-2 text-5xl font-semibold text-white">
               {displaySeconds}
             </h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              Tiempo restante para la siguiente serie.
-            </p>
           </div>
-          <div className="rounded-[28px] border border-white/10 bg-black/20 px-4 py-3 text-right">
-            <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">
+          <div className="rounded-[20px] border border-white/10 bg-black/20 px-4 py-3 text-right">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
               Próxima serie
             </p>
-            <p className="mt-2 text-lg font-semibold text-white">
+            <p className="mt-1 text-sm font-semibold text-white">
               {upcomingLabel}
             </p>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <ExerciseSummaryRow label="Peso" value={`${exercise.weight} kg`} emphasis />
-          <ExerciseSummaryRow label="RIR" value={exercise.rir} />
-          <ExerciseSummaryRow label="Tempo" value={exercise.tempo} />
-        </div>
-
-        <div className="rounded-[28px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c8d5ff]">
+        <div className="rounded-[20px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c8d5ff]">
             Consejo del coach
           </p>
-          <p className="mt-3 text-base leading-7 text-zinc-200">
+          <p className="mt-2 text-sm leading-6 text-zinc-200">
             {exercise.coach}
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={onAddThirtySeconds}
-            className="min-h-11 rounded-full border border-white/10 bg-white/[0.05] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.08]"
+            className="min-h-12 rounded-full border border-white/10 bg-white/[0.06] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.1]"
           >
             +30 segundos
           </button>
           <button
             type="button"
             onClick={onSkipRest}
-            className="min-h-11 rounded-full border border-white/10 bg-white/[0.05] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.08]"
+            className="min-h-12 rounded-full border border-white/10 bg-white/[0.06] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.1]"
           >
             Omitir descanso
           </button>
@@ -381,6 +478,7 @@ function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyC
 }
 
 export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
+  const router = useRouter();
   const [mode, setMode] = useState("preview");
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setIndex, setSetIndex] = useState(0);
@@ -547,6 +645,14 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
     setRestEndsAt(Date.now());
   };
 
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/workouts");
+    }
+  };
+
   const saveWorkout = () => {
     appendWorkoutSession({
       date: new Date().toISOString(),
@@ -570,15 +676,34 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
     );
   }
 
-  if (phase === "training") {
+  if (phase === "training" || phase === "rest") {
     return (
       <AppShell>
         <TrainingScreen
           exercise={currentExercise}
-          setNumber={setIndex + 1}
+          setIndex={setIndex}
           totalSets={currentExercise.sets}
+          phase={phase}
+          exerciseIndex={exerciseIndex}
+          totalExercises={plan.exercises.length}
           onCompleteSet={completeSet}
+          onBack={handleBack}
         />
+        {phase === "rest" ? (
+          <RestScreen
+            exercise={currentExercise}
+            remainingSeconds={restEndsAt ? Math.max(Math.ceil((restEndsAt - now) / 1000), 0) : 0}
+            onAddThirtySeconds={extendRest}
+            onSkipRest={skipRest}
+            upcomingLabel={
+              setIndex < currentExercise.sets - 1
+                ? `Serie ${setIndex + 2}`
+                : nextExercise
+                  ? nextExercise.name
+                  : "Resumen final"
+            }
+          />
+        ) : null}
       </AppShell>
     );
   }
@@ -587,26 +712,6 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
     return (
       <AppShell>
         <SetCompleteOverlay reps={currentExercise.repsCompleted} />
-      </AppShell>
-    );
-  }
-
-  if (phase === "rest") {
-    return (
-      <AppShell>
-        <RestScreen
-          exercise={currentExercise}
-          remainingSeconds={restEndsAt ? Math.max(Math.ceil((restEndsAt - now) / 1000), 0) : 0}
-          onAddThirtySeconds={extendRest}
-          onSkipRest={skipRest}
-          upcomingLabel={
-            setIndex < currentExercise.sets - 1
-              ? `Serie ${setIndex + 2}`
-              : nextExercise
-                ? nextExercise.name
-                : "Resumen final"
-          }
-        />
       </AppShell>
     );
   }

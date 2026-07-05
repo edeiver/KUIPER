@@ -3,10 +3,10 @@
 import Link from "next/link";
 
 const items = [
-  { label: "Rutinas", href: "/workouts" },
+  { label: "Entrenamientos", href: "/workouts" },
   { label: "Progreso", href: null },
   { label: "Nutrición", href: null },
-  { label: "Fotos", href: null },
+  { label: "Ajustes", href: null },
 ];
 
 export default function QuickAccessGrid() {
@@ -27,6 +27,9 @@ export default function QuickAccessGrid() {
             className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-center opacity-60"
           >
             <p className="text-sm font-semibold text-zinc-400">{item.label}</p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
+              Próximamente
+            </p>
           </div>
         ),
       )}

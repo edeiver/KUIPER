@@ -1,10 +1,9 @@
 import AppShell from "@/components/ui/AppShell";
 import HomeHero from "@/components/dashboard/HomeHero";
-import LastSessionCard from "@/components/dashboard/LastSessionCard";
 import QuickAccessGrid from "@/components/dashboard/QuickAccessGrid";
 import RecentActivityList from "@/components/dashboard/RecentActivityList";
+import StatsOverviewCard from "@/components/dashboard/StatsOverviewCard";
 import TodayWorkoutCard from "@/components/dashboard/TodayWorkoutCard";
-import WeeklyProgressCard from "@/components/dashboard/WeeklyProgressCard";
 
 export default function Home() {
   return (
@@ -14,10 +13,7 @@ export default function Home() {
 
         <TodayWorkoutCard />
 
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-          <WeeklyProgressCard />
-          <LastSessionCard />
-        </div>
+        <StatsOverviewCard />
 
         <div className="grid gap-4">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">

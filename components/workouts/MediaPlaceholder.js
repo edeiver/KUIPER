@@ -1,8 +1,10 @@
  "use client";
 
-export default function MediaPlaceholder({ label, variant = "image" }) {
+export default function MediaPlaceholder({ label, variant = "image", className = "" }) {
   return (
-    <div className="relative min-h-56 overflow-hidden rounded-[28px] border border-white/10 bg-[#15171d]">
+    <div
+      className={`relative min-h-56 overflow-hidden rounded-[28px] border border-white/10 bg-[#15171d] ${className}`}
+    >
       <div className="absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.02))]" />
       {variant === "anatomy" ? (
         <>

@@ -12,17 +12,22 @@ const stats = [
 
 export default function TodayWorkoutCard() {
   return (
-    <Surface className="grid gap-8 p-7 sm:p-10">
-      <div>
+    <Surface className="relative grid gap-8 overflow-hidden p-7 sm:p-10">
+      <div
+        className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#9fb7ff]/10 blur-3xl"
+        aria-hidden="true"
+      />
+
+      <div className="relative">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-          Entrenamiento de hoy
+          Hoy toca
         </p>
         <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white sm:text-6xl">
           Espalda + Bíceps
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -34,7 +39,9 @@ export default function TodayWorkoutCard() {
         ))}
       </div>
 
-      <PrimaryAction href="/workouts">▶ Comenzar entrenamiento</PrimaryAction>
+      <PrimaryAction href="/workouts" className="relative min-h-[4.5rem] text-lg">
+        ▶ Comenzar entrenamiento
+      </PrimaryAction>
     </Surface>
   );
 }
