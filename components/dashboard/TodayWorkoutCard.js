@@ -2,12 +2,22 @@
 
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import Surface from "@/components/ui/Surface";
+import { espaldaBicepsPlan, getWorkoutSummary } from "@/data/workout-plans";
+
+// Locale-independent thousands separator — `toLocaleString("es-ES")` silently
+// drops the separator when Node's ICU data doesn't include es-ES (small-icu
+// builds), so a fixed regex is used instead of relying on Intl here.
+function formatThousands(value) {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+const summary = getWorkoutSummary(espaldaBicepsPlan);
 
 const stats = [
-  { label: "Ejercicios", value: "6" },
-  { label: "Duración", value: "70 min" },
-  { label: "Volumen est.", value: "6.200 kg" },
-  { label: "Dificultad", value: "Media-Alta" },
+  { label: "Ejercicios", value: String(summary.exerciseCount) },
+  { label: "Duración", value: `${summary.estimatedDurationMinutes} min` },
+  { label: "Volumen est.", value: `${formatThousands(summary.totalVolume)} kg` },
+  { label: "Dificultad", value: summary.difficulty },
 ];
 
 export default function TodayWorkoutCard() {
@@ -23,7 +33,7 @@ export default function TodayWorkoutCard() {
           Hoy toca
         </p>
         <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white sm:text-6xl">
-          Espalda + Bíceps
+          {summary.title}
         </h2>
       </div>
 

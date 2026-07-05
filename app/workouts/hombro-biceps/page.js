@@ -3,10 +3,10 @@ import PrimaryAction from "@/components/ui/PrimaryAction";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Surface from "@/components/ui/Surface";
 import ExerciseList from "@/components/workouts/ExerciseList";
-import { getWorkoutSummary, pechoTricepsPlan } from "@/data/workout-plans";
+import { hombroBicepsPlan, getWorkoutSummary } from "@/data/workout-plans";
 
-const exercises = pechoTricepsPlan.exercises.map((exercise) => exercise.name);
-const summary = getWorkoutSummary(pechoTricepsPlan);
+const exercises = hombroBicepsPlan.exercises.map((exercise) => exercise.name);
+const summary = getWorkoutSummary(hombroBicepsPlan);
 
 export default function WorkoutDetailPage() {
   return (
@@ -45,7 +45,7 @@ export default function WorkoutDetailPage() {
           <ExerciseList exercises={exercises} />
         </Surface>
 
-        <PrimaryAction href="/workouts/pecho-triceps/exercise">
+        <PrimaryAction href="/workouts/hombro-biceps/exercise">
           Comenzar entrenamiento
         </PrimaryAction>
       </div>

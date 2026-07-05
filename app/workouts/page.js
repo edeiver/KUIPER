@@ -1,28 +1,27 @@
 import AppShell from "@/components/ui/AppShell";
 import SectionTitle from "@/components/ui/SectionTitle";
 import WorkoutCard from "@/components/workouts/WorkoutCard";
+import { ALL_PLANS, getWorkoutSummary } from "@/data/workout-plans";
+
+const catalogWorkouts = ALL_PLANS.map((plan) => {
+  const summary = getWorkoutSummary(plan);
+
+  return {
+    title: summary.title,
+    focus: summary.focus,
+    duration: `${summary.estimatedDurationMinutes} min`,
+    week: "Semana 1",
+    href: `/workouts/${summary.slug}`,
+  };
+});
 
 const workouts = [
-  {
-    title: "Pecho + Tríceps",
-    focus: "Desarrollar pecho superior y brazos.",
-    duration: "75 min",
-    week: "Semana 1",
-    href: "/workouts/pecho-triceps",
-  },
-  {
-    title: "Espalda + Bíceps",
-    focus: "Construir fuerza de tracción y densidad.",
-    duration: "70 min",
-    week: "Semana 1",
-    href: "/workouts/espalda-biceps",
-  },
+  ...catalogWorkouts,
   {
     title: "Pierna",
     focus: "Base de fuerza, control y volumen.",
-    duration: "80 min",
     week: "Semana 1",
-    href: "/workouts/pecho-triceps",
+    disabled: true,
   },
 ];
 

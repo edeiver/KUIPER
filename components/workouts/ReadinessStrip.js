@@ -3,7 +3,7 @@
 export default function ReadinessStrip({ exercise }) {
   const items = [
     ["Técnica", "Controlada"],
-    ["Rango", "Completo"],
+    ["Rango", exercise.rangeOfMotion],
     ["Intensidad", `RIR ${exercise.rir}`],
     ["Siguiente", `${exercise.restSeconds} s`],
   ];

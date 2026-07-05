@@ -1,5 +1,5 @@
 # Vision
 
-Kuiper helps people make better training, nutrition and recovery decisions.
+This document has been superseded. `docs/VISION.md` is now the official source for Hércules's product vision.
 
-It is built from real daily gym usage.
+See [`docs/VISION.md`](./VISION.md), sections 1 and 2.

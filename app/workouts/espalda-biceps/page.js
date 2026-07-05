@@ -3,15 +3,10 @@ import PrimaryAction from "@/components/ui/PrimaryAction";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Surface from "@/components/ui/Surface";
 import ExerciseList from "@/components/workouts/ExerciseList";
+import { espaldaBicepsPlan, getWorkoutSummary } from "@/data/workout-plans";
 
-const exercises = [
-  "Jalón al pecho",
-  "Jalón agarre cerrado (triángulo)",
-  "Remo sentado en máquina",
-  "Pullover en polea",
-  "Curl predicador",
-  "Curl martillo",
-];
+const exercises = espaldaBicepsPlan.exercises.map((exercise) => exercise.name);
+const summary = getWorkoutSummary(espaldaBicepsPlan);
 
 export default function WorkoutDetailPage() {
   return (
@@ -19,8 +14,8 @@ export default function WorkoutDetailPage() {
       <div className="grid gap-8 py-8">
         <SectionTitle
           eyebrow="Entrenamiento"
-          title="Espalda + Bíceps"
-          subtitle="Construir fuerza de tracción y densidad."
+          title={summary.title}
+          subtitle={summary.focus}
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -28,7 +23,9 @@ export default function WorkoutDetailPage() {
             <p className="text-sm font-medium uppercase tracking-[0.24em] text-zinc-500">
               Duración estimada
             </p>
-            <p className="mt-4 text-4xl font-semibold text-white">70 minutos</p>
+            <p className="mt-4 text-4xl font-semibold text-white">
+              {summary.estimatedDurationMinutes} minutos
+            </p>
           </Surface>
 
           <Surface>
@@ -36,7 +33,7 @@ export default function WorkoutDetailPage() {
               Objetivo
             </p>
             <p className="mt-4 text-xl leading-8 text-zinc-100">
-              Construir fuerza de tracción y densidad.
+              {summary.focus}
             </p>
           </Surface>
         </div>

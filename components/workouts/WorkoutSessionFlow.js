@@ -8,6 +8,7 @@ import SectionTitle from "@/components/ui/SectionTitle";
 import Surface from "@/components/ui/Surface";
 import AnatomyPanel from "@/components/workouts/AnatomyPanel";
 import ExerciseProgress from "@/components/workouts/ExerciseProgress";
+import ExerciseSwitcherSheet from "@/components/workouts/ExerciseSwitcherSheet";
 import ExerciseTabs from "@/components/workouts/ExerciseTabs";
 import InsightCard from "@/components/workouts/InsightCard";
 import MediaPlaceholder from "@/components/workouts/MediaPlaceholder";
@@ -17,114 +18,11 @@ import SessionCommand from "@/components/workouts/SessionCommand";
 import SessionDock from "@/components/workouts/SessionDock";
 import TechniquePanel from "@/components/workouts/TechniquePanel";
 import { appendWorkoutSession, appendWorkoutSet } from "@/utils/workoutStorage";
-
-const pechoTricepsPlan = {
-  title: "Pecho + Tríceps",
-  exercises: [
-    {
-      name: "Press inclinado con mancuernas",
-      objective: "Más carga.",
-      weight: 24,
-      sets: 4,
-      reps: "8 - 10",
-      repsCompleted: 10,
-      rir: "2",
-      tempo: "3-1-1",
-      restSeconds: 120,
-      coach: "Baja lento durante 3 segundos y evita despegar los hombros del banco.",
-      muscles: { primary: "Pectoral superior", secondary: "Tríceps y deltoide anterior" },
-      anatomyNote:
-        "Este ejercicio abre la sesión porque permite cargar con estabilidad y priorizar el pecho superior cuando el sistema nervioso está fresco. También prepara tríceps y hombros para el resto del entrenamiento.",
-      technique: {
-        title: "Press inclinado limpio y controlado",
-        steps: [
-          "Ajusta el banco entre 30 y 45 grados.",
-          "Apoya hombros y espalda alta de forma estable.",
-          "Baja las mancuernas en 3 segundos con control.",
-          "Pausa brevemente abajo sin perder tensión.",
-          "Empuja hacia arriba sin chocar las mancuernas.",
-        ],
-        mistakes: [
-          "Arquear demasiado la espalda.",
-          "Bajar sin control por exceso de peso.",
-          "Despegar los hombros del banco.",
-          "Convertir el movimiento en press vertical.",
-        ],
-        cues: [
-          "Hombros pegados al banco",
-          "Baja en 3 segundos",
-          "Pausa abajo sin rebotar",
-          "Empuja con pecho, no con hombros",
-        ],
-      },
-    },
-    {
-      name: "Press plano en máquina",
-      objective: "Más estabilidad.",
-      weight: 30,
-      sets: 4,
-      reps: "8 - 10",
-      repsCompleted: 10,
-      rir: "2",
-      tempo: "2-1-1",
-      restSeconds: 120,
-      coach: "Asegura una línea de empuje consistente en cada repetición.",
-      muscles: { primary: "Pecho medio", secondary: "Tríceps, deltoide anterior" },
-    },
-    {
-      name: "Aperturas en polea",
-      objective: "Más tensión.",
-      weight: 14,
-      sets: 3,
-      reps: "12 - 15",
-      repsCompleted: 12,
-      rir: "2",
-      tempo: "3-1-2",
-      restSeconds: 90,
-      coach: "Conserva el arco suave y siente el pecho trabajando todo el recorrido.",
-      muscles: { primary: "Pecho", secondary: "Deltoide anterior" },
-    },
-    {
-      name: "Fondos asistidos",
-      objective: "Más control.",
-      weight: 18,
-      sets: 3,
-      reps: "8 - 12",
-      repsCompleted: 10,
-      rir: "1 - 2",
-      tempo: "2-1-1",
-      restSeconds: 120,
-      coach: "No colapses en el fondo y mantén el torso estable.",
-      muscles: { primary: "Pecho inferior", secondary: "Tríceps, hombro anterior" },
-    },
-    {
-      name: "Extensión de tríceps en cuerda",
-      objective: "Más contracción.",
-      weight: 18,
-      sets: 3,
-      reps: "10 - 12",
-      repsCompleted: 12,
-      rir: "2",
-      tempo: "2-1-1",
-      restSeconds: 75,
-      coach: "Separa la cuerda al final sin perder el control del codo.",
-      muscles: { primary: "Tríceps", secondary: "Antebrazo" },
-    },
-    {
-      name: "Press francés",
-      objective: "Cerrar con precisión.",
-      weight: 16,
-      sets: 3,
-      reps: "10 - 12",
-      repsCompleted: 10,
-      rir: "1 - 2",
-      tempo: "3-1-1",
-      restSeconds: 90,
-      coach: "Mantén los codos alineados y la bajada controlada.",
-      muscles: { primary: "Tríceps", secondary: "Deltoide anterior" },
-    },
-  ],
-};
+import { getExerciseHistory } from "@/utils/exerciseHistory";
+import { getWeightSuggestion } from "@/utils/weightSuggestion";
+import { formatRelativeDate } from "@/utils/formatWorkoutSession";
+import { pechoTricepsPlan, resolveExercise } from "@/data/workout-plans";
+import { getSwitchableAlternatives } from "@/data/exercises/repository";
 
 function formatSeconds(value) {
   const minutes = Math.floor(value / 60);
@@ -238,6 +136,9 @@ function TrainingScreen({
   totalExercises,
   onCompleteSet,
   onBack,
+  exerciseHistory,
+  weightSuggestion,
+  onOpenSwitcher,
 }) {
   const percent = Math.round(((exerciseIndex + 1) / totalExercises) * 100);
   const completedThroughIndex = phase === "training" ? setIndex : setIndex + 1;
@@ -259,7 +160,14 @@ function TrainingScreen({
             {`Ejercicio ${exerciseIndex + 1} de ${totalExercises} · ${percent}%`}
           </p>
         </div>
-        <div className="h-10 w-10 shrink-0" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={onOpenSwitcher}
+          aria-label="Cambiar ejercicio"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-lg text-white transition hover:bg-white/[0.09]"
+        >
+          ⇄
+        </button>
       </header>
 
       <div className="grid gap-5 pt-6">
@@ -282,6 +190,42 @@ function TrainingScreen({
             </p>
             <p className="mt-2 text-sm leading-6 text-zinc-200">{exercise.coach}</p>
           </div>
+        </Surface>
+
+        <Surface className="grid gap-3 p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+            Historial
+          </p>
+          {exerciseHistory.lastSession ? (
+            <>
+              <div>
+                <p className="text-xs text-zinc-500">Última vez</p>
+                <p className="text-base font-semibold text-white">
+                  {`${formatRelativeDate(exerciseHistory.lastSession.date)} · ${exerciseHistory.lastSession.weight} kg × ${exerciseHistory.lastSession.reps} reps`}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-zinc-500">Mejor marca</p>
+                <p className="text-base font-semibold text-[#c8d5ff]">
+                  {`${exerciseHistory.personalRecord.weight} kg × ${exerciseHistory.personalRecord.reps} reps`}
+                </p>
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-zinc-500">Aún no has hecho este ejercicio antes.</p>
+          )}
+        </Surface>
+
+        <Surface className="grid gap-2 p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+            Sugerencia para hoy
+          </p>
+          <p className="text-base font-semibold text-white">{weightSuggestion.message}</p>
+          {weightSuggestion.suggestedWeight != null ? (
+            <p className="text-sm text-[#c8d5ff]">
+              {`Peso sugerido: ${weightSuggestion.suggestedWeight} kg`}
+            </p>
+          ) : null}
         </Surface>
 
         <Surface className="grid gap-3 p-5">
@@ -491,9 +435,46 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
   const [comments, setComments] = useState("");
   const [energy, setEnergy] = useState("Alta");
   const [pendingTransitionIndex, setPendingTransitionIndex] = useState(null);
+  const [exerciseHistory, setExerciseHistory] = useState({ lastSession: null, personalRecord: null });
+  const [exerciseOverrides, setExerciseOverrides] = useState({});
+  const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
-  const currentExercise = plan.exercises[exerciseIndex];
-  const nextExercise = plan.exercises[exerciseIndex + 1];
+  // Applies any chosen alternatives on top of the original plan — the plan
+  // itself (`plan.exercises`) is never mutated. Reuses the same
+  // `resolveExercise` merge the plan was built with, so a substituted
+  // exercise keeps today's prescription (sets/reps/rir/weight) and only
+  // swaps the movement's identity (name, technique, coach, ...).
+  const resolvedExercises = plan.exercises.map((exercise, index) => {
+    const overrideId = exerciseOverrides[index];
+
+    if (!overrideId) {
+      return exercise;
+    }
+
+    return resolveExercise({
+      exerciseId: overrideId,
+      sets: exercise.sets,
+      reps: exercise.reps,
+      rir: exercise.rir,
+      weight: exercise.weight,
+      repsCompleted: exercise.repsCompleted,
+    });
+  });
+
+  const currentExercise = resolvedExercises[exerciseIndex];
+  const nextExercise = resolvedExercises[exerciseIndex + 1];
+  const basePlanExercise = plan.exercises[exerciseIndex];
+  const availableAlternatives = getSwitchableAlternatives(basePlanExercise.exerciseId);
+
+  useEffect(() => {
+    setExerciseHistory(getExerciseHistory(currentExercise.exerciseId));
+  }, [currentExercise.exerciseId]);
+
+  const weightSuggestion = getWeightSuggestion({
+    exercise: currentExercise,
+    history: exerciseHistory,
+    currentPlan: plan,
+  });
 
   useEffect(() => {
     if (mode === "preview") {
@@ -559,8 +540,8 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
   const sessionSummary = useMemo(() => {
     const totalSetsCompleted =
       phase === "completed"
-        ? plan.exercises.reduce((sum, exercise) => sum + exercise.sets, 0)
-        : plan.exercises.reduce((sum, exercise, index) => {
+        ? resolvedExercises.reduce((sum, exercise) => sum + exercise.sets, 0)
+        : resolvedExercises.reduce((sum, exercise, index) => {
             if (index < exerciseIndex) {
               return sum + exercise.sets;
             }
@@ -574,11 +555,11 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
 
     const totalVolumeCompleted =
       phase === "completed"
-        ? plan.exercises.reduce(
+        ? resolvedExercises.reduce(
             (sum, exercise) => sum + exercise.sets * exercise.weight * exercise.repsCompleted,
             0,
           )
-        : plan.exercises.reduce((sum, exercise, index) => {
+        : resolvedExercises.reduce((sum, exercise, index) => {
             if (index < exerciseIndex) {
               return sum + exercise.sets * exercise.weight * exercise.repsCompleted;
             }
@@ -593,10 +574,10 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
     return {
       totalVolume: totalVolumeCompleted,
       totalSets: totalSetsCompleted,
-      completedExercises: phase === "completed" ? plan.exercises.length : exerciseIndex + 1,
+      completedExercises: phase === "completed" ? resolvedExercises.length : exerciseIndex + 1,
       totalTime: sessionStartedAt ? formatSeconds(Math.max(Math.floor((now - sessionStartedAt) / 1000), 0)) : "0:00",
     };
-  }, [exerciseIndex, now, phase, sessionStartedAt, setIndex, plan]);
+  }, [exerciseIndex, now, phase, sessionStartedAt, setIndex, resolvedExercises]);
 
   useEffect(() => {
     if (phase === "training" && sessionStartedAt === null) {
@@ -645,6 +626,28 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
     setRestEndsAt(Date.now());
   };
 
+  const openSwitcher = () => {
+    setIsSwitcherOpen(true);
+  };
+
+  const closeSwitcher = () => {
+    setIsSwitcherOpen(false);
+  };
+
+  const selectAlternative = (alternativeExerciseId) => {
+    setExerciseOverrides((current) => ({ ...current, [exerciseIndex]: alternativeExerciseId }));
+    setIsSwitcherOpen(false);
+  };
+
+  const keepOriginalExercise = () => {
+    setExerciseOverrides((current) => {
+      const next = { ...current };
+      delete next[exerciseIndex];
+      return next;
+    });
+    setIsSwitcherOpen(false);
+  };
+
   const handleBack = () => {
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
@@ -660,7 +663,7 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
       workout: plan.title,
       totalSets: sessionSummary.totalSets,
       totalVolume: sessionSummary.totalVolume,
-      exercises: plan.exercises.map((exercise) => exercise.name),
+      exercises: resolvedExercises.map((exercise) => exercise.name),
       comments,
       energy,
       calories: null,
@@ -688,6 +691,9 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
           totalExercises={plan.exercises.length}
           onCompleteSet={completeSet}
           onBack={handleBack}
+          exerciseHistory={exerciseHistory}
+          weightSuggestion={weightSuggestion}
+          onOpenSwitcher={openSwitcher}
         />
         {phase === "rest" ? (
           <RestScreen
@@ -702,6 +708,15 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
                   ? nextExercise.name
                   : "Resumen final"
             }
+          />
+        ) : null}
+        {isSwitcherOpen ? (
+          <ExerciseSwitcherSheet
+            alternatives={availableAlternatives}
+            isSubstituted={Boolean(exerciseOverrides[exerciseIndex])}
+            onSelectAlternative={selectAlternative}
+            onKeepOriginal={keepOriginalExercise}
+            onClose={closeSwitcher}
           />
         ) : null}
       </AppShell>
