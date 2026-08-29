@@ -4,9 +4,9 @@ import Link from "next/link";
 
 const items = [
   { label: "Entrenamientos", href: "/workouts" },
-  { label: "Progreso", href: null },
+  { label: "Progreso", href: "/progress" },
   { label: "Nutrición", href: null },
-  { label: "Ajustes", href: null },
+  { label: "Ajustes", href: "/settings" },
 ];
 
 export default function QuickAccessGrid() {

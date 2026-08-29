@@ -41,3 +41,25 @@ export function readWorkoutSets() {
 export function readWorkoutSessions() {
   return readList(SESSIONS_KEY);
 }
+
+// Full local backup as a single plain object — the only two keys this app
+// persists. Pairs with importWorkoutData for a round-trippable JSON export.
+export function exportWorkoutData() {
+  return {
+    sets: readWorkoutSets(),
+    sessions: readWorkoutSessions(),
+  };
+}
+
+// Overwrites local storage with a previously exported backup. Replaces
+// rather than merges — this is a single-user, no-backend app, so "restore"
+// unambiguously means "go back to this snapshot," not a merge with whatever
+// is currently on this device.
+export function importWorkoutData(data) {
+  if (!data || !Array.isArray(data.sets) || !Array.isArray(data.sessions)) {
+    throw new Error("Archivo de backup inválido: se esperaban las listas 'sets' y 'sessions'.");
+  }
+
+  writeList(SETS_KEY, data.sets);
+  writeList(SESSIONS_KEY, data.sessions);
+}
