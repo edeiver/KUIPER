@@ -23,7 +23,10 @@
     "greetingFallback": "Hola",
     "greetingWithName": "{greeting}, {name} 👋",
     "scheduledWorkout": "Entrenamiento programado",
-    "quickAccessTitle": "Accesos rápidos"
+    "quickAccessTitle": "Accesos rápidos",
+    "namePromptTitle": "¿Cómo te llamamos?",
+    "namePromptPlaceholder": "Tu nombre",
+    "namePromptSave": "Guardar"
   },
   "dashboard": {
     "todayWorkout": {

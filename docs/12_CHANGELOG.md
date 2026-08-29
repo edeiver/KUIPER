@@ -9,6 +9,7 @@
 - Feat: insight de IA post-entrenamiento (`app/api/insight`) — un botón opcional en el resumen de sesión llama una vez a Claude (Haiku 4.5) con los datos reales de esa sesión y devuelve un párrafo corto de feedback, en el idioma activo. Primer código server-side y primer secreto (`ANTHROPIC_API_KEY`) del proyecto.
 - Docs: README reescrito en inglés reflejando el estado real del producto, con sección sobre el proceso de desarrollo con Claude Code.
 - Fix/mejora: `utils/weightSuggestion.js` ahora considera hasta 3 sesiones reales recientes (no solo la última) para distinguir un mal día puntual de una tendencia real antes de subir o bajar el peso sugerido. De paso se corrigió que el mensaje de sugerencia estaba hardcodeado en español — ahora se traduce según el idioma activo, igual que el resto de la sesión.
+- Fix: el saludo del dashboard (`HomeHero`) tenía el nombre del fundador hardcodeado para cualquier usuario. Ahora se pregunta una sola vez y se guarda en `localStorage` (`utils/userProfile.js`).
 
 ## v0.1.0
 Initial starter kit.
