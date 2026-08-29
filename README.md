@@ -1,99 +1,59 @@
-# Kuiper
+# Kuiper (Hércules)
 
-Kuiper es una plataforma de rendimiento personal impulsada por IA. Su objetivo es ayudar a las personas a mejorar de forma integral mediante entrenamiento, nutrición, recuperación, seguimiento de progreso e inteligencia artificial.
+A strength-training platform built from real, daily gym use — not designed in a vacuum. It combines an exercise catalog with real technique detail, guided sessions sequenced by biomechanical logic, and a relational data model designed from day one to scale into a proper backend — with no invented data on any screen.
 
-## Visión
+> Full product and architecture documentation lives in [`docs/VISION.md`](./docs/VISION.md) (in Spanish). This README covers what you need to run the project and understand what's actually built today.
 
-Construir una plataforma SaaS personal-first que convierta datos, hábitos y contexto individual en recomendaciones accionables para mejorar rendimiento, salud y consistencia.
+## The problem
 
-## Objetivos
+Training seriously today means choosing between a generic logger (no technique, no ordering logic) or a bloated app that knows nothing about your actual gym or history. Kuiper does the opposite: a catalog with personal-trainer-level detail (technique, common mistakes, muscles to feel, equipment-aware alternatives), exercises sequenced by hypertrophy/fatigue logic, and progress computed only from what the user actually logged.
 
-- Preparar una base técnica profesional, limpia y mantenible.
-- Separar responsabilidades desde el inicio sin introducir complejidad prematura.
-- Documentar las decisiones iniciales del producto y de la arquitectura.
-- Dejar el proyecto listo para incorporar módulos funcionales de forma progresiva.
+## What's built
 
-## Stack tecnológico
+- **Guided workout session** (`components/workouts/WorkoutSessionFlow.js`): a set-by-set flow with a rest timer, technique/anatomy panel, perceived-energy scale, coach checklist, and an exercise-switcher that only offers alternatives matching available equipment.
+- **Weight suggestions from real history**: `utils/weightSuggestion.js` compares last session's reps/weight against the target rep range and recommends increasing, holding, or reducing load — never a made-up number.
+- **Exercise catalog as relational entities** (`data/exercises/`): normalized tables for instructions, common mistakes, cues, alternatives, media, and secondary muscles, composed through a single join point (`data/exercises/repository.js`) that does in-memory joins today and will become a Prisma query tomorrow without changing any caller.
+- **Dashboard** with a last-session summary, quick access, and recent activity, all read from `localStorage` (`utils/workoutStorage.js`).
+- **Progress**: total sessions, cumulative volume, and per-exercise weight progression (`app/progress`), computed entirely from real logged sets.
+- **Local backup** (`app/settings`): export/import the full workout history as JSON, since everything lives client-side.
+- Versioned local persistence (`kuiper.workout.*.v1`) with no backend or auth — an intentional decision for this stage (see `docs/05_TECH_STACK.md`).
 
-- Next.js 15
-- React 19
-- JavaScript
-- App Router
-- Tailwind CSS
-- ESLint
-- Turbopack
-- npm
+## What's missing (by design, not oversight)
 
-## Cómo ejecutar el proyecto
+Nutrition, an AI Coach, and ChatGPT sync are planned but not implemented — see `docs/03_PRODUCT.md` and `docs/10_ROADMAP.md`. No stub UI was added for these modules to avoid shipping screens that promise something that doesn't work yet.
 
-Instalar dependencias:
+## Stack
+
+**Current:** Next.js 15 (App Router) · React 19 · JavaScript · Tailwind CSS 4 · Turbopack · npm — no backend, no auth, `localStorage` persistence.
+
+**Long-term target:** Node.js (Express → NestJS) + PostgreSQL + Prisma. The current data model is already designed as relational entities (stable IDs, explicit foreign keys, no document-style nesting) to migrate without a redesign — see `docs/11_DECISIONS.md`.
+
+## Running it
 
 ```bash
 npm install
-```
-
-Ejecutar en desarrollo:
-
-```bash
-npm run dev
-```
-
-Construir para producción:
-
-```bash
-npm run build
-```
-
-Ejecutar lint:
-
-```bash
+npm run dev      # http://localhost:3000
+npm run build    # production build
 npm run lint
 ```
 
-## Estructura de carpetas
+## Structure
 
 ```text
-app/
+app/                    App Router routes: dashboard, workouts/*, progress, settings
 components/
-  common/
-  dashboard/
-  workouts/
-  nutrition/
-  progress/
-  ui/
-hooks/
-lib/
-services/
-stores/
-utils/
-styles/
-docs/
-public/
+  workouts/              live workout session UI
+  dashboard/              home screen cards
+  progress/               history and per-exercise progression
+  settings/               local data backup
+  ui/                     shared primitives (AppShell, Surface, SectionTitle)
+data/
+  exercises/              normalized catalog + repository.js (composition layer)
+  workout-plans.js         today's prescription (kept separate from the catalog, see docs/11_DECISIONS.md)
+utils/                    localStorage read/write, suggestion and history calculations
+docs/                     product and architecture documentation (start with VISION.md)
 ```
 
-## Convenciones
+## Working process
 
-- Mantener componentes pequeños y con responsabilidad única.
-- Evitar lógica de negocio dentro de componentes visuales.
-- Usar nombres descriptivos y consistentes.
-- No agregar dependencias sin una necesidad clara del sprint.
-- Documentar decisiones relevantes en `docs/DECISIONS.md`.
-- Mantener JavaScript como lenguaje del proyecto hasta que se decida lo contrario.
-
-## Roadmap inicial
-
-- Sprint 0: Fundamentos técnicos, estructura y documentación.
-- Sprint 1: Interfaz del módulo de entrenamiento.
-- Sprint 2: Evolución del módulo de entrenamiento.
-- Sprint 3: Módulo de nutrición.
-- Sprint 4: Módulo de progreso.
-- Sprint 5: ChatGPT Sync.
-
-## Git
-
-Primer commit sugerido:
-
-```bash
-git add .
-git commit -m "chore: initialize Kuiper project"
-```
+This project is developed against documentation in `docs/`: every meaningful product or architecture decision is recorded in `docs/11_DECISIONS.md` with its rationale before being implemented, and `docs/13_TODO.md` / `docs/12_CHANGELOG.md` are kept current per sprint. `docs/00_INDEX.md` explains the recommended reading order.
