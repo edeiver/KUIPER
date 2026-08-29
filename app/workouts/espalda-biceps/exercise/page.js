@@ -1,6 +1,0 @@
-import WorkoutSessionFlow from "@/components/workouts/WorkoutSessionFlow";
-import { espaldaBicepsPlan } from "@/data/workout-plans";
-
-export default function ExercisePage() {
-  return <WorkoutSessionFlow plan={espaldaBicepsPlan} />;
-}

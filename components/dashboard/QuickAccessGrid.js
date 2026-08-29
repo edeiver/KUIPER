@@ -1,15 +1,19 @@
 "use client";
 
-import Link from "next/link";
-
-const items = [
-  { label: "Entrenamientos", href: "/workouts" },
-  { label: "Progreso", href: "/progress" },
-  { label: "Nutrición", href: null },
-  { label: "Ajustes", href: "/settings" },
-];
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export default function QuickAccessGrid() {
+  const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
+
+  const items = [
+    { label: t("workouts"), href: "/workouts" },
+    { label: t("progress"), href: "/progress" },
+    { label: t("nutrition"), href: null },
+    { label: t("settings"), href: "/settings" },
+  ];
+
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {items.map((item) =>
@@ -28,7 +32,7 @@ export default function QuickAccessGrid() {
           >
             <p className="text-sm font-semibold text-zinc-400">{item.label}</p>
             <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-600">
-              Próximamente
+              {tCommon("comingSoon")}
             </p>
           </div>
         ),

@@ -1,0 +1,242 @@
+{
+  "common": {
+    "back": "Back",
+    "close": "Close",
+    "comingSoon": "Coming soon",
+    "energyLevels": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "sessionSummary": "{relativeDate} · {sets} sets · {volume} kg"
+  },
+  "nav": {
+    "workouts": "Workouts",
+    "progress": "Progress",
+    "nutrition": "Nutrition",
+    "settings": "Settings"
+  },
+  "home": {
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingNight": "Good evening",
+    "greetingFallback": "Hi",
+    "greetingWithName": "{greeting}, {name} 👋",
+    "scheduledWorkout": "Workout scheduled",
+    "quickAccessTitle": "Quick access"
+  },
+  "dashboard": {
+    "todayWorkout": {
+      "eyebrow": "Today's session",
+      "exercises": "Exercises",
+      "duration": "Duration",
+      "estimatedVolume": "Est. volume",
+      "difficulty": "Difficulty",
+      "cta": "▶ Start workout"
+    },
+    "stats": {
+      "title": "Summary",
+      "lastSession": "Last session",
+      "noSessions": "No sessions logged yet.",
+      "currentWeight": "Current weight",
+      "averageTime": "Average time",
+      "completedSessions": "Completed sessions",
+      "weeklyVolume": "Weekly volume"
+    },
+    "recentActivity": {
+      "title": "Recent activity",
+      "empty": "No activity logged yet. Complete your first workout to see it here."
+    }
+  },
+  "progress": {
+    "eyebrow": "Progress",
+    "title": "Your evolution",
+    "subtitle": "Based only on the sessions you've actually completed and saved.",
+    "stats": {
+      "title": "Summary",
+      "totalSessions": "Total sessions",
+      "last7Days": "Last 7 days",
+      "totalVolume": "Total volume"
+    },
+    "exerciseProgress": {
+      "title": "Progress by exercise",
+      "empty": "No sets logged yet. Complete a workout to see weight progression per exercise.",
+      "setSummary": "{reps} reps · {relativeDate}"
+    },
+    "sessionHistory": {
+      "title": "Session history",
+      "empty": "No sessions logged yet. Complete your first workout to see it here."
+    }
+  },
+  "settings": {
+    "eyebrow": "Settings",
+    "title": "Your data",
+    "backup": {
+      "title": "Backup",
+      "description": "Your entire history lives only in this browser. Export a file periodically so you don't lose it if you clear site data or switch devices.",
+      "export": "Export data",
+      "import": "Import backup",
+      "exportSuccess": "Backup downloaded: {sessions} sessions, {sets} sets.",
+      "importSuccess": "Data restored: {sessions} sessions, {sets} sets. Reloading…",
+      "importError": "Couldn't read the file."
+    }
+  },
+  "workouts": {
+    "list": {
+      "eyebrow": "Workouts",
+      "title": "Week 1",
+      "subtitle": "Sessions built to keep focus, intensity, and progression.",
+      "week": "Week 1",
+      "durationMinutes": "{minutes} min",
+      "legPlaceholderTitle": "Legs",
+      "legPlaceholderFocus": "Strength base, control, and volume."
+    },
+    "detail": {
+      "eyebrow": "Workout",
+      "estimatedDuration": "Estimated duration",
+      "minutes": "{minutes} minutes",
+      "objective": "Objective",
+      "exerciseListTitle": "Exercise list",
+      "startCta": "Start workout"
+    },
+    "completed": {
+      "noSession": "You haven't saved a workout yet.",
+      "viewWorkouts": "View workouts",
+      "title": "Great work.",
+      "duration": "Duration",
+      "sets": "Sets",
+      "volume": "Volume",
+      "calories": "Calories",
+      "caloriesValue": "{value} kcal",
+      "energyQuestion": "How was your energy?",
+      "comments": "Comments",
+      "noComments": "No comments.",
+      "backHome": "Back to home"
+    },
+    "session": {
+      "previewSubtitle": "A guided session to execute better, control intensity, and progress without losing technique.",
+      "todayGoalTitle": "Today's goal",
+      "todayGoalBody": "Today we want to progress in weight while keeping technique. If you complete every set at the indicated RIR, increase the weight next week.",
+      "coachTitle": "Coach",
+      "now": "Now",
+      "previewSetReps": "Set 1 · {reps} reps",
+      "sessionCommandBody": "Use a weight that leaves reps in reserve according to the indicated RIR. Control matters more than the rep itself.",
+      "weight": "Weight",
+      "weightValue": "{weight} kg",
+      "rir": "RIR",
+      "tempo": "Tempo",
+      "startTraining": "Start workout",
+      "viewPlan": "View set plan",
+      "back": "Back",
+      "switchExercise": "Switch exercise",
+      "exerciseOf": "Exercise {current} of {total}",
+      "percentComplete": "{percent}% complete",
+      "exerciseCountPercent": "Exercise {current} of {total} · {percent}%",
+      "viewExercise": "Exercise view",
+      "coachIndication": "Coach note",
+      "history": "History",
+      "lastTime": "Last time",
+      "bestRecord": "Best record",
+      "noHistory": "You haven't done this exercise before.",
+      "lastSessionSummary": "{relativeDate} · {weight} kg × {reps} reps",
+      "recordSummary": "{weight} kg × {reps} reps",
+      "todaySuggestion": "Suggestion for today",
+      "suggestedWeight": "Suggested weight: {weight} kg",
+      "series": "Sets",
+      "setOf": "Set {current} of {total}",
+      "repsTarget": "Target reps",
+      "reps": "Reps",
+      "completeSet": "Complete set",
+      "setCompleted": "Set completed",
+      "repsCompleted": "{count} reps",
+      "excellent": "Excellent.",
+      "rest": "Rest",
+      "nextSet": "Next set",
+      "coachTip": "Coach tip",
+      "addThirtySeconds": "+30 seconds",
+      "skipRest": "Skip rest",
+      "ready": "Ready",
+      "restTimerTitle": "Rest timer",
+      "restTimerBody": "Catch your breath, get ready for the next set, and keep your target intensity without rushing the pace.",
+      "nextSetLabel": "Set {number}",
+      "finalSummary": "Final summary",
+      "nextExercise": "Next exercise",
+      "objectiveLabel": "Objective: {objective}",
+      "sessionCompleted": "Workout completed",
+      "greatJob": "Great work.",
+      "savedLocally": "The session was saved locally on this device.",
+      "totalTime": "Total time",
+      "totalSets": "Sets completed",
+      "totalVolume": "Total volume",
+      "totalVolumeValue": "{volume} kg",
+      "completedExercises": "Exercises completed",
+      "calories": "Calories",
+      "caloriesPlaceholder": "-- kcal",
+      "energyStatus": "Energy level",
+      "comments": "Comments",
+      "commentsPlaceholder": "Add how you felt, notes, or adjustments for next session.",
+      "saveWorkout": "Save workout",
+      "workoutSaved": "Workout saved",
+      "switcher": {
+        "eyebrow": "Switch exercise",
+        "title": "Pick an equivalent alternative",
+        "close": "Close",
+        "empty": "No alternatives registered for this exercise yet.",
+        "keepOriginal": "Back to original exercise"
+      },
+      "technique": {
+        "eyebrow": "Technique",
+        "titleSuffix": "{name}: step-by-step technique",
+        "realImage": "Real image",
+        "gif": "GIF / animation",
+        "video": "Demo video",
+        "stepByStep": "Step by step",
+        "commonMistakes": "Common mistakes",
+        "checklistTitle": "Checklist before you start",
+        "trainerTips": "Coach tips"
+      },
+      "myTraining": {
+        "eyebrow": "My training",
+        "title": "Working sets",
+        "series": "Set",
+        "reps": "Reps",
+        "rir": "RIR",
+        "rest": "Rest",
+        "restValue": "{seconds} s",
+        "weight": "Weight",
+        "weightValue": "{weight} kg",
+        "current": "Current",
+        "next": "Next",
+        "pending": "Pending",
+        "notes": "Notes",
+        "startRest": "Start rest",
+        "nextExercise": "Next exercise"
+      },
+      "anatomy": {
+        "eyebrow": "Anatomy",
+        "title": "Why it's in the program",
+        "anatomyImage": "Anatomy image",
+        "primaryMuscle": "Primary muscle",
+        "secondaryMuscles": "Secondary muscles"
+      },
+      "readiness": {
+        "technique": "Technique",
+        "controlled": "Controlled",
+        "range": "Range",
+        "intensity": "Intensity",
+        "rirValue": "RIR {rir}",
+        "next": "Next",
+        "secondsValue": "{seconds} s"
+      },
+      "setStatus": {
+        "completed": "✔ Done",
+        "active": "In progress",
+        "pending": "Pending"
+      },
+      "dock": {
+        "summary": "Set 1 · {weight} kg · RIR {rir}",
+        "complete": "Complete"
+      }
+    }
+  }
+}

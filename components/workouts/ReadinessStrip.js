@@ -1,11 +1,14 @@
  "use client";
 
+import { useTranslations } from "next-intl";
+
 export default function ReadinessStrip({ exercise }) {
+  const t = useTranslations("workouts.session.readiness");
   const items = [
-    ["Técnica", "Controlada"],
-    ["Rango", exercise.rangeOfMotion],
-    ["Intensidad", `RIR ${exercise.rir}`],
-    ["Siguiente", `${exercise.restSeconds} s`],
+    [t("technique"), t("controlled")],
+    [t("range"), exercise.rangeOfMotion],
+    [t("intensity"), t("rirValue", { rir: exercise.rir })],
+    [t("next"), t("secondsValue", { seconds: exercise.restSeconds })],
   ];
 
   return (

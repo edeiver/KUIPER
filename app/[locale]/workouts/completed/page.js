@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import AppShell from "@/components/ui/AppShell";
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import Surface from "@/components/ui/Surface";
 import { readWorkoutSessions } from "@/utils/workoutStorage";
-
-const ENERGY_LEVELS = ["Alta", "Media", "Baja"];
 
 function formatDuration(durationSeconds) {
   if (!durationSeconds) {
@@ -25,6 +24,8 @@ function formatDate(dateIso) {
 }
 
 export default function CompletedWorkoutPage() {
+  const t = useTranslations("workouts.completed");
+  const tEnergy = useTranslations("common.energyLevels");
   const [session, setSession] = useState(undefined);
 
   useEffect(() => {
@@ -41,13 +42,15 @@ export default function CompletedWorkoutPage() {
       <AppShell>
         <section className="grid min-h-[calc(100vh-48px)] content-center gap-8 py-8 text-center">
           <p className="text-xl text-zinc-300">
-            Aún no has guardado ningún entrenamiento.
+            {t("noSession")}
           </p>
-          <PrimaryAction href="/workouts">Ver entrenamientos</PrimaryAction>
+          <PrimaryAction href="/workouts">{t("viewWorkouts")}</PrimaryAction>
         </section>
       </AppShell>
     );
   }
+
+  const energyLevels = ["high", "medium", "low"].map((key) => tEnergy(key));
 
   return (
     <AppShell>
@@ -55,7 +58,7 @@ export default function CompletedWorkoutPage() {
         <header className="text-center">
           <p className="text-5xl">🎉</p>
           <h1 className="mt-6 text-4xl font-semibold tracking-normal text-white sm:text-6xl">
-            Excelente trabajo.
+            {t("title")}
           </h1>
           <p className="mt-4 text-xl text-zinc-300">{session.workout}</p>
           <p className="mt-1 text-sm text-zinc-500">{formatDate(session.date)}</p>
@@ -64,37 +67,37 @@ export default function CompletedWorkoutPage() {
         <Surface className="grid gap-7">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
-              <p className="text-xs text-zinc-500">Duración</p>
+              <p className="text-xs text-zinc-500">{t("duration")}</p>
               <p className="mt-1 text-lg font-semibold text-white">
                 {formatDuration(session.durationSeconds)}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
-              <p className="text-xs text-zinc-500">Series</p>
+              <p className="text-xs text-zinc-500">{t("sets")}</p>
               <p className="mt-1 text-lg font-semibold text-white">
                 {session.totalSets}
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
-              <p className="text-xs text-zinc-500">Volumen</p>
+              <p className="text-xs text-zinc-500">{t("volume")}</p>
               <p className="mt-1 text-lg font-semibold text-white">
                 {session.totalVolume} kg
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-center">
-              <p className="text-xs text-zinc-500">Calorías</p>
+              <p className="text-xs text-zinc-500">{t("calories")}</p>
               <p className="mt-1 text-lg font-semibold text-white">
-                {session.calories ?? "--"} kcal
+                {t("caloriesValue", { value: session.calories ?? "--" })}
               </p>
             </div>
           </div>
 
           <div>
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              ¿Cómo estuvo la energía?
+              {t("energyQuestion")}
             </p>
             <div className="grid grid-cols-3 gap-3">
-              {ENERGY_LEVELS.map((level) => (
+              {energyLevels.map((level) => (
                 <div
                   key={level}
                   className={`rounded-2xl border p-4 text-center font-semibold ${
@@ -111,15 +114,15 @@ export default function CompletedWorkoutPage() {
 
           <div>
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Comentarios
+              {t("comments")}
             </p>
             <div className="min-h-28 rounded-2xl border border-white/10 bg-black/20 p-4 text-zinc-300">
-              {session.comments || "Sin comentarios."}
+              {session.comments || t("noComments")}
             </div>
           </div>
         </Surface>
 
-        <PrimaryAction href="/">Volver al inicio</PrimaryAction>
+        <PrimaryAction href="/">{t("backHome")}</PrimaryAction>
       </section>
     </AppShell>
   );

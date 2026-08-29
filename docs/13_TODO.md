@@ -1,8 +1,9 @@
 # TODO
 
-- Workout MVP
+- Workout MVP — done, now with ES/EN i18n (routing + UI + catalog content, see `docs/11_DECISIONS.md`)
 - Exercise DB — Planned
-- Progress
+- Progress — MVP shipped (totals, per-exercise weight progression, session history)
+- Settings — local data backup (export/import)
 - Nutrition
 
 ## Technical debt

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import Surface from "@/components/ui/Surface";
 import { exportWorkoutData, importWorkoutData } from "@/utils/workoutStorage";
 
@@ -9,6 +10,7 @@ function todayStamp() {
 }
 
 export default function DataBackupCard() {
+  const t = useTranslations("settings.backup");
   const fileInputRef = useRef(null);
   const [status, setStatus] = useState(null);
 
@@ -25,7 +27,7 @@ export default function DataBackupCard() {
     URL.revokeObjectURL(url);
     setStatus({
       type: "success",
-      message: `Backup descargado: ${data.sessions.length} sesiones, ${data.sets.length} series.`,
+      message: t("exportSuccess", { sessions: data.sessions.length, sets: data.sets.length }),
     });
   };
 
@@ -43,11 +45,11 @@ export default function DataBackupCard() {
         importWorkoutData(data);
         setStatus({
           type: "success",
-          message: `Datos restaurados: ${data.sessions.length} sesiones, ${data.sets.length} series. Recargando…`,
+          message: t("importSuccess", { sessions: data.sessions.length, sets: data.sets.length }),
         });
         window.setTimeout(() => window.location.reload(), 1000);
-      } catch (error) {
-        setStatus({ type: "error", message: error.message || "No se pudo leer el archivo." });
+      } catch {
+        setStatus({ type: "error", message: t("importError") });
       }
     };
     reader.readAsText(file);
@@ -56,11 +58,10 @@ export default function DataBackupCard() {
   return (
     <Surface className="grid gap-5">
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-        Copia de seguridad
+        {t("title")}
       </p>
       <p className="text-sm text-zinc-400">
-        Todo tu historial vive únicamente en este navegador. Exporta un archivo periódicamente para no
-        perderlo si borras datos del sitio o cambias de dispositivo.
+        {t("description")}
       </p>
 
       <div className="grid grid-cols-2 gap-3">
@@ -69,14 +70,14 @@ export default function DataBackupCard() {
           onClick={handleExport}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-center text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.09]"
         >
-          Exportar datos
+          {t("export")}
         </button>
         <button
           type="button"
           onClick={handleImportClick}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-center text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.09]"
         >
-          Importar backup
+          {t("import")}
         </button>
         <input
           ref={fileInputRef}

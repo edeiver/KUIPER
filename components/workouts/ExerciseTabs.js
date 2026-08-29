@@ -1,12 +1,15 @@
  "use client";
 
-const tabs = [
-  ["Técnica", "#tecnica"],
-  ["Mi entrenamiento", "#mi-entrenamiento"],
-  ["Anatomía", "#anatomia"],
-];
+import { useTranslations } from "next-intl";
 
 export default function ExerciseTabs() {
+  const t = useTranslations("workouts.session");
+  const tabs = [
+    [t("technique.eyebrow"), "#tecnica"],
+    [t("myTraining.eyebrow"), "#mi-entrenamiento"],
+    [t("anatomy.eyebrow"), "#anatomia"],
+  ];
+
   return (
     <nav className="sticky top-4 z-10 grid grid-cols-3 gap-2 rounded-full border border-white/10 bg-[#101116]/90 p-1 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl">
       {tabs.map(([tab, href], index) => (

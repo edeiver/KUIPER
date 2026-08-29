@@ -1,23 +1,25 @@
- "use client";
+"use client";
 
+import { useTranslations } from "next-intl";
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import Surface from "@/components/ui/Surface";
 import RestTimer from "@/components/workouts/RestTimer";
 
 export default function MyTrainingPanel({ exercise }) {
+  const t = useTranslations("workouts.session.myTraining");
   const rows = Array.from({ length: exercise.sets }, (_, index) => ({
     series: String(index + 1),
-    status: index === 0 ? "Actual" : index === 1 ? "Siguiente" : "Pendiente",
+    status: index === 0 ? t("current") : index === 1 ? t("next") : t("pending"),
   }));
 
   return (
     <Surface id="mi-entrenamiento" className="scroll-mt-24 grid gap-6">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9fb7ff]">
-          Mi entrenamiento
+          {t("eyebrow")}
         </p>
         <h2 className="mt-3 text-2xl font-semibold text-white">
-          Series de trabajo
+          {t("title")}
         </h2>
       </div>
 
@@ -33,36 +35,36 @@ export default function MyTrainingPanel({ exercise }) {
           >
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-                Serie
+                {t("series")}
               </p>
               <p className="mt-1 text-xl font-semibold text-white">{row.series}</p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-                Reps
+                {t("reps")}
               </p>
               <p className="mt-1 text-base font-semibold text-white">{exercise.reps}</p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-                RIR
+                {t("rir")}
               </p>
               <p className="mt-1 text-base font-semibold text-white">{exercise.rir}</p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-                Descanso
+                {t("rest")}
               </p>
               <p className="mt-1 text-base font-semibold text-white">
-                {`${exercise.restSeconds} s`}
+                {t("restValue", { seconds: exercise.restSeconds })}
               </p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
-                Peso
+                {t("weight")}
               </p>
               <p className="mt-1 text-base font-semibold text-white">
-                {`${exercise.weight} kg`}
+                {t("weightValue", { weight: exercise.weight })}
               </p>
             </div>
             <span className="rounded-full bg-white/10 px-3 py-2 text-center text-xs font-semibold text-zinc-300">
@@ -76,7 +78,7 @@ export default function MyTrainingPanel({ exercise }) {
 
       <div>
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
-          Notas
+          {t("notes")}
         </p>
         <div className="min-h-24 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-zinc-500">
           {exercise.coach}
@@ -84,8 +86,8 @@ export default function MyTrainingPanel({ exercise }) {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <PrimaryAction>Iniciar descanso</PrimaryAction>
-        <PrimaryAction href="/workouts/completed">Siguiente ejercicio</PrimaryAction>
+        <PrimaryAction>{t("startRest")}</PrimaryAction>
+        <PrimaryAction href="/workouts/completed">{t("nextExercise")}</PrimaryAction>
       </div>
     </Surface>
   );

@@ -16,6 +16,7 @@ Training seriously today means choosing between a generic logger (no technique, 
 - **Dashboard** with a last-session summary, quick access, and recent activity, all read from `localStorage` (`utils/workoutStorage.js`).
 - **Progress**: total sessions, cumulative volume, and per-exercise weight progression (`app/progress`), computed entirely from real logged sets.
 - **Local backup** (`app/settings`): export/import the full workout history as JSON, since everything lives client-side.
+- **Full ES/EN i18n** via `next-intl`: locale-prefixed routing (`/es`, `/en`), a language switcher, and the entire exercise catalog (names, technique steps, mistakes, cues, alternatives) translated — not just UI chrome. See `docs/11_DECISIONS.md` for how translations sit alongside the relational tables without duplicating structural data.
 - Versioned local persistence (`kuiper.workout.*.v1`) with no backend or auth — an intentional decision for this stage (see `docs/05_TECH_STACK.md`).
 
 ## What's missing (by design, not oversight)
@@ -24,7 +25,7 @@ Nutrition, an AI Coach, and ChatGPT sync are planned but not implemented — see
 
 ## Stack
 
-**Current:** Next.js 15 (App Router) · React 19 · JavaScript · Tailwind CSS 4 · Turbopack · npm — no backend, no auth, `localStorage` persistence.
+**Current:** Next.js 15 (App Router) · React 19 · JavaScript · Tailwind CSS 4 · next-intl · Turbopack · npm — no backend, no auth, `localStorage` persistence.
 
 **Long-term target:** Node.js (Express → NestJS) + PostgreSQL + Prisma. The current data model is already designed as relational entities (stable IDs, explicit foreign keys, no document-style nesting) to migrate without a redesign — see `docs/11_DECISIONS.md`.
 
@@ -40,15 +41,18 @@ npm run lint
 ## Structure
 
 ```text
-app/                    App Router routes: dashboard, workouts/*, progress, settings
+app/[locale]/           App Router routes under the locale segment: dashboard, workouts/*, progress, settings
+i18n/                    next-intl routing/navigation config
+messages/                UI-chrome translations (es.json, en.json)
+middleware.js            locale detection/redirect
 components/
   workouts/              live workout session UI
   dashboard/              home screen cards
   progress/               history and per-exercise progression
   settings/               local data backup
-  ui/                     shared primitives (AppShell, Surface, SectionTitle)
+  ui/                     shared primitives (AppShell, Surface, SectionTitle, LanguageSwitcher)
 data/
-  exercises/              normalized catalog + repository.js (composition layer)
+  exercises/              normalized catalog + per-(id, locale) translations.js + repository.js (composition layer)
   workout-plans.js         today's prescription (kept separate from the catalog, see docs/11_DECISIONS.md)
 utils/                    localStorage read/write, suggestion and history calculations
 docs/                     product and architecture documentation (start with VISION.md)

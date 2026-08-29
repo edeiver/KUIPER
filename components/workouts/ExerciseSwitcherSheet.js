@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export default function ExerciseSwitcherSheet({
   alternatives,
   isSubstituted,
@@ -7,22 +9,24 @@ export default function ExerciseSwitcherSheet({
   onKeepOriginal,
   onClose,
 }) {
+  const t = useTranslations("workouts.session.switcher");
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center">
       <section className="workout-pop grid w-full max-w-lg gap-4 rounded-[32px] border border-white/10 bg-[#101218] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.5)]">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-              Cambiar ejercicio
+              {t("eyebrow")}
             </p>
             <h2 className="mt-2 text-xl font-semibold text-white">
-              Elige una alternativa equivalente
+              {t("title")}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={t("close")}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-white transition hover:bg-white/[0.09]"
           >
             ✕
@@ -31,7 +35,7 @@ export default function ExerciseSwitcherSheet({
 
         {alternatives.length === 0 ? (
           <p className="text-sm text-zinc-500">
-            No hay alternativas registradas todavía para este ejercicio.
+            {t("empty")}
           </p>
         ) : (
           <div className="grid gap-2.5">
@@ -58,7 +62,7 @@ export default function ExerciseSwitcherSheet({
             onClick={onKeepOriginal}
             className="min-h-11 rounded-full border border-white/10 bg-white/[0.05] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.08]"
           >
-            Volver al ejercicio original
+            {t("keepOriginal")}
           </button>
         ) : null}
       </section>

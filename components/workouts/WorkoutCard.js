@@ -1,8 +1,10 @@
  "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export default function WorkoutCard({ title, focus, duration, week, href, disabled = false }) {
+  const t = useTranslations("common");
   const body = (
     <div className="flex items-start justify-between gap-4">
       <div>
@@ -16,7 +18,7 @@ export default function WorkoutCard({ title, focus, duration, week, href, disabl
       </div>
       {disabled ? (
         <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
-          Próximamente
+          {t("comingSoon")}
         </span>
       ) : (
         <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#08090b]">

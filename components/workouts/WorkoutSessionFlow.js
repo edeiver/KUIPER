@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import AppShell from "@/components/ui/AppShell";
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -21,7 +22,7 @@ import { appendWorkoutSession, appendWorkoutSet } from "@/utils/workoutStorage";
 import { getExerciseHistory } from "@/utils/exerciseHistory";
 import { getWeightSuggestion } from "@/utils/weightSuggestion";
 import { formatRelativeDate } from "@/utils/formatWorkoutSession";
-import { pechoTricepsPlan, resolveExercise } from "@/data/workout-plans";
+import { getPlanBySlug, resolveExercise } from "@/data/workout-plans";
 import { getSwitchableAlternatives } from "@/data/exercises/repository";
 
 function formatSeconds(value) {
@@ -46,15 +47,16 @@ function ExerciseSummaryRow({ label, value, emphasis = false }) {
 }
 
 function WorkoutPreview({ onStartTraining, plan }) {
+  const t = useTranslations("workouts.session");
   const exercise = plan.exercises[0];
   const totalExercises = plan.exercises.length;
 
   return (
     <div className="grid gap-6 pb-32 pt-8">
       <SectionTitle
-        eyebrow={`Ejercicio 1 de ${totalExercises}`}
+        eyebrow={t("exerciseOf", { current: 1, total: totalExercises })}
         title={exercise.name}
-        subtitle="Una sesión guiada para ejecutar mejor, controlar la intensidad y progresar sin perder técnica."
+        subtitle={t("previewSubtitle")}
       />
 
       <ExerciseProgress exerciseIndex={0} totalExercises={totalExercises} />
@@ -62,11 +64,8 @@ function WorkoutPreview({ onStartTraining, plan }) {
       <ReadinessStrip exercise={exercise} />
 
       <section className="grid gap-4 sm:grid-cols-2">
-        <InsightCard title="Objetivo de hoy">
-          Hoy queremos progresar en peso manteniendo la técnica. Si completas
-          todas las series con el RIR indicado, aumenta el peso la próxima semana.
-        </InsightCard>
-        <InsightCard title="Coach">{exercise.coach}</InsightCard>
+        <InsightCard title={t("todayGoalTitle")}>{t("todayGoalBody")}</InsightCard>
+        <InsightCard title={t("coachTitle")}>{exercise.coach}</InsightCard>
       </section>
 
       <ExerciseTabs />
@@ -80,27 +79,25 @@ function WorkoutPreview({ onStartTraining, plan }) {
 }
 
 function SetStatusBadge({ status }) {
+  const t = useTranslations("workouts.session");
   const styles = {
     completed: "border-[#9fb7ff]/30 bg-[#9fb7ff]/10 text-[#c8d5ff]",
     active: "border-white/20 bg-white text-[#090a0d]",
     pending: "border-white/10 bg-white/[0.04] text-zinc-500",
-  };
-  const labels = {
-    completed: "✔ Hecha",
-    active: "En curso",
-    pending: "Pendiente",
   };
 
   return (
     <span
       className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold ${styles[status]}`}
     >
-      {labels[status]}
+      {t(`setStatus.${status}`)}
     </span>
   );
 }
 
 function SetRow({ index, weight, reps, status }) {
+  const t = useTranslations("workouts.session");
+
   return (
     <div
       className={`flex items-center gap-3 rounded-2xl border p-3.5 transition ${
@@ -114,11 +111,11 @@ function SetRow({ index, weight, reps, status }) {
       </div>
       <div className="grid flex-1 grid-cols-2 gap-2">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">Peso</p>
-          <p className="text-sm font-semibold text-white">{weight} kg</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">{t("weight")}</p>
+          <p className="text-sm font-semibold text-white">{t("weightValue", { weight })}</p>
         </div>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">Reps</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">{t("reps")}</p>
           <p className="text-sm font-semibold text-white">{reps}</p>
         </div>
       </div>
@@ -140,6 +137,8 @@ function TrainingScreen({
   weightSuggestion,
   onOpenSwitcher,
 }) {
+  const t = useTranslations("workouts.session");
+  const locale = useLocale();
   const percent = Math.round(((exerciseIndex + 1) / totalExercises) * 100);
   const completedThroughIndex = phase === "training" ? setIndex : setIndex + 1;
 
@@ -149,7 +148,7 @@ function TrainingScreen({
         <button
           type="button"
           onClick={onBack}
-          aria-label="Volver"
+          aria-label={t("back")}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-lg text-white transition hover:bg-white/[0.09]"
         >
           ←
@@ -157,13 +156,13 @@ function TrainingScreen({
         <div className="min-w-0 flex-1 text-center">
           <p className="truncate text-base font-semibold text-white">{exercise.name}</p>
           <p className="text-xs text-zinc-500">
-            {`Ejercicio ${exerciseIndex + 1} de ${totalExercises} · ${percent}%`}
+            {t("exerciseCountPercent", { current: exerciseIndex + 1, total: totalExercises, percent })}
           </p>
         </div>
         <button
           type="button"
           onClick={onOpenSwitcher}
-          aria-label="Cambiar ejercicio"
+          aria-label={t("switchExercise")}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.05] text-lg text-white transition hover:bg-white/[0.09]"
         >
           ⇄
@@ -173,20 +172,20 @@ function TrainingScreen({
       <div className="grid gap-5 pt-6">
         <Surface className="grid gap-5 p-5">
           <MediaPlaceholder
-            label="Vista del ejercicio"
+            label={t("viewExercise")}
             variant="video"
             className="min-h-72"
           />
 
           <div className="grid grid-cols-3 gap-3">
-            <ExerciseSummaryRow label="Peso" value={`${exercise.weight} kg`} emphasis />
-            <ExerciseSummaryRow label="Reps obj." value={exercise.reps} />
-            <ExerciseSummaryRow label="RIR" value={exercise.rir} />
+            <ExerciseSummaryRow label={t("weight")} value={t("weightValue", { weight: exercise.weight })} emphasis />
+            <ExerciseSummaryRow label={t("repsTarget")} value={exercise.reps} />
+            <ExerciseSummaryRow label={t("rir")} value={exercise.rir} />
           </div>
 
           <div className="rounded-[24px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#c8d5ff]">
-              Indicación del coach
+              {t("coachIndication")}
             </p>
             <p className="mt-2 text-sm leading-6 text-zinc-200">{exercise.coach}</p>
           </div>
@@ -194,36 +193,43 @@ function TrainingScreen({
 
         <Surface className="grid gap-3 p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-            Historial
+            {t("history")}
           </p>
           {exerciseHistory.lastSession ? (
             <>
               <div>
-                <p className="text-xs text-zinc-500">Última vez</p>
+                <p className="text-xs text-zinc-500">{t("lastTime")}</p>
                 <p className="text-base font-semibold text-white">
-                  {`${formatRelativeDate(exerciseHistory.lastSession.date)} · ${exerciseHistory.lastSession.weight} kg × ${exerciseHistory.lastSession.reps} reps`}
+                  {t("lastSessionSummary", {
+                    relativeDate: formatRelativeDate(exerciseHistory.lastSession.date, locale),
+                    weight: exerciseHistory.lastSession.weight,
+                    reps: exerciseHistory.lastSession.reps,
+                  })}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-zinc-500">Mejor marca</p>
+                <p className="text-xs text-zinc-500">{t("bestRecord")}</p>
                 <p className="text-base font-semibold text-[#c8d5ff]">
-                  {`${exerciseHistory.personalRecord.weight} kg × ${exerciseHistory.personalRecord.reps} reps`}
+                  {t("recordSummary", {
+                    weight: exerciseHistory.personalRecord.weight,
+                    reps: exerciseHistory.personalRecord.reps,
+                  })}
                 </p>
               </div>
             </>
           ) : (
-            <p className="text-sm text-zinc-500">Aún no has hecho este ejercicio antes.</p>
+            <p className="text-sm text-zinc-500">{t("noHistory")}</p>
           )}
         </Surface>
 
         <Surface className="grid gap-2 p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-            Sugerencia para hoy
+            {t("todaySuggestion")}
           </p>
           <p className="text-base font-semibold text-white">{weightSuggestion.message}</p>
           {weightSuggestion.suggestedWeight != null ? (
             <p className="text-sm text-[#c8d5ff]">
-              {`Peso sugerido: ${weightSuggestion.suggestedWeight} kg`}
+              {t("suggestedWeight", { weight: weightSuggestion.suggestedWeight })}
             </p>
           ) : null}
         </Surface>
@@ -231,10 +237,10 @@ function TrainingScreen({
         <Surface className="grid gap-3 p-5">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-              Series
+              {t("series")}
             </p>
             <p className="text-xs font-semibold text-zinc-500">
-              {`Serie ${setIndex + 1} de ${totalSets}`}
+              {t("setOf", { current: setIndex + 1, total: totalSets })}
             </p>
           </div>
 
@@ -263,7 +269,7 @@ function TrainingScreen({
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-[#07080a]/95 px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur sm:px-8">
         <div className="mx-auto w-full max-w-[430px] sm:max-w-5xl">
-          <PrimaryAction onClick={onCompleteSet}>Completar serie</PrimaryAction>
+          <PrimaryAction onClick={onCompleteSet}>{t("completeSet")}</PrimaryAction>
         </div>
       </div>
     </div>
@@ -271,15 +277,17 @@ function TrainingScreen({
 }
 
 function SetCompleteOverlay({ reps }) {
+  const t = useTranslations("workouts.session");
+
   return (
     <div className="flex min-h-[calc(100vh-48px)] items-center justify-center py-8">
       <div className="workout-pop w-full max-w-lg rounded-[36px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-8 text-center shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white text-3xl text-[#08090b]">
           ✔
         </div>
-        <p className="mt-6 text-3xl font-semibold text-white">Serie completada</p>
-        <p className="mt-3 text-5xl font-semibold text-white">{reps} repeticiones</p>
-        <p className="mt-4 text-lg text-zinc-300">Excelente.</p>
+        <p className="mt-6 text-3xl font-semibold text-white">{t("setCompleted")}</p>
+        <p className="mt-3 text-5xl font-semibold text-white">{t("repsCompleted", { count: reps })}</p>
+        <p className="mt-4 text-lg text-zinc-300">{t("excellent")}</p>
       </div>
     </div>
   );
@@ -292,6 +300,7 @@ function RestScreen({
   onSkipRest,
   upcomingLabel,
 }) {
+  const t = useTranslations("workouts.session");
   const displaySeconds = remainingSeconds > 5 ? formatSeconds(remainingSeconds) : String(Math.max(remainingSeconds, 0));
 
   return (
@@ -300,7 +309,7 @@ function RestScreen({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-              Descanso
+              {t("rest")}
             </p>
             <h2 className="mt-2 text-5xl font-semibold text-white">
               {displaySeconds}
@@ -308,7 +317,7 @@ function RestScreen({
           </div>
           <div className="rounded-[20px] border border-white/10 bg-black/20 px-4 py-3 text-right">
             <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-              Próxima serie
+              {t("nextSet")}
             </p>
             <p className="mt-1 text-sm font-semibold text-white">
               {upcomingLabel}
@@ -318,7 +327,7 @@ function RestScreen({
 
         <div className="rounded-[20px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c8d5ff]">
-            Consejo del coach
+            {t("coachTip")}
           </p>
           <p className="mt-2 text-sm leading-6 text-zinc-200">
             {exercise.coach}
@@ -331,14 +340,14 @@ function RestScreen({
             onClick={onAddThirtySeconds}
             className="min-h-12 rounded-full border border-white/10 bg-white/[0.06] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.1]"
           >
-            +30 segundos
+            {t("addThirtySeconds")}
           </button>
           <button
             type="button"
             onClick={onSkipRest}
             className="min-h-12 rounded-full border border-white/10 bg-white/[0.06] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.1]"
           >
-            Omitir descanso
+            {t("skipRest")}
           </button>
         </div>
       </section>
@@ -347,66 +356,75 @@ function RestScreen({
 }
 
 function TransitionScreen({ nextExercise }) {
+  const t = useTranslations("workouts.session");
+
   return (
     <div className="flex min-h-[calc(100vh-48px)] items-center justify-center py-8">
       <section className="w-full max-w-lg rounded-[36px] border border-white/10 bg-white/[0.06] p-8 text-center shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-          Siguiente ejercicio
+          {t("nextExercise")}
         </p>
         <h2 className="mt-4 text-4xl font-semibold text-white">
           {nextExercise.name}
         </h2>
-        <p className="mt-4 text-lg text-zinc-300">Objetivo: {nextExercise.objective}</p>
+        <p className="mt-4 text-lg text-zinc-300">{t("objectiveLabel", { objective: nextExercise.objective })}</p>
       </section>
     </div>
   );
 }
 
 function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyChange, onSave, saved }) {
+  const t = useTranslations("workouts.session");
+  const tEnergy = useTranslations("common.energyLevels");
+  const energyLevels = ["high", "medium", "low"];
+
   return (
     <div className="grid gap-6 py-8">
       <SectionTitle
-        eyebrow="Entrenamiento completado"
-        title="Excelente trabajo."
-        subtitle="La sesión quedó guardada localmente en el dispositivo."
+        eyebrow={t("sessionCompleted")}
+        title={t("greatJob")}
+        subtitle={t("savedLocally")}
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <ExerciseSummaryRow label="Tiempo total" value={summary.totalTime} emphasis />
-        <ExerciseSummaryRow label="Series realizadas" value={String(summary.totalSets)} />
-        <ExerciseSummaryRow label="Volumen total" value={`${summary.totalVolume} kg`} />
-        <ExerciseSummaryRow label="Ejercicios completados" value={String(summary.completedExercises)} />
-        <ExerciseSummaryRow label="Calorías" value="-- kcal" />
-        <ExerciseSummaryRow label="Estado de energía" value={energy} />
+        <ExerciseSummaryRow label={t("totalTime")} value={summary.totalTime} emphasis />
+        <ExerciseSummaryRow label={t("totalSets")} value={String(summary.totalSets)} />
+        <ExerciseSummaryRow label={t("totalVolume")} value={t("totalVolumeValue", { volume: summary.totalVolume })} />
+        <ExerciseSummaryRow label={t("completedExercises")} value={String(summary.completedExercises)} />
+        <ExerciseSummaryRow label={t("calories")} value={t("caloriesPlaceholder")} />
+        <ExerciseSummaryRow label={t("energyStatus")} value={energy} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        {["Alta", "Media", "Baja"].map((level) => (
-          <button
-            key={level}
-            type="button"
-            onClick={() => onEnergyChange(level)}
-            className={`rounded-[24px] border p-4 text-left text-sm font-semibold transition ${
-              energy === level
-                ? "border-[#9fb7ff]/40 bg-[#9fb7ff]/10 text-white"
-                : "border-white/10 bg-white/[0.05] text-zinc-400 hover:bg-white/[0.08]"
-            }`}
-          >
-            {level}
-          </button>
-        ))}
+        {energyLevels.map((level) => {
+          const label = tEnergy(level);
+          return (
+            <button
+              key={level}
+              type="button"
+              onClick={() => onEnergyChange(label)}
+              className={`rounded-[24px] border p-4 text-left text-sm font-semibold transition ${
+                energy === label
+                  ? "border-[#9fb7ff]/40 bg-[#9fb7ff]/10 text-white"
+                  : "border-white/10 bg-white/[0.05] text-zinc-400 hover:bg-white/[0.08]"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       <div className="rounded-[28px] border border-white/10 bg-white/[0.06] p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9fb7ff]">
-          Comentarios
+          {t("comments")}
         </p>
         <textarea
           value={comments}
           onChange={(event) => onCommentsChange(event.target.value)}
           rows={5}
           className="mt-4 w-full resize-none rounded-[24px] border border-white/10 bg-black/20 p-4 text-base text-white outline-none placeholder:text-zinc-600"
-          placeholder="Añade sensaciones, notas o ajustes para la próxima sesión."
+          placeholder={t("commentsPlaceholder")}
         />
       </div>
 
@@ -415,14 +433,18 @@ function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyC
         onClick={onSave}
         className="flex min-h-16 w-full items-center justify-center rounded-[28px] bg-white px-6 text-base font-semibold text-[#090a0d] shadow-[0_24px_70px_rgba(255,255,255,0.18)] transition hover:bg-zinc-200"
       >
-        {saved ? "Entrenamiento guardado" : "Guardar entrenamiento"}
+        {saved ? t("workoutSaved") : t("saveWorkout")}
       </button>
     </div>
   );
 }
 
-export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
+export default function WorkoutSessionFlow({ plan: planProp } = {}) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("workouts.session");
+  const tEnergyLevels = useTranslations("common.energyLevels");
+  const plan = planProp ?? getPlanBySlug("pecho-triceps", locale);
   const [mode, setMode] = useState("preview");
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [setIndex, setSetIndex] = useState(0);
@@ -433,7 +455,7 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
   const [setStartedAt, setSetStartedAt] = useState(null);
   const [saved, setSaved] = useState(false);
   const [comments, setComments] = useState("");
-  const [energy, setEnergy] = useState("Alta");
+  const [energy, setEnergy] = useState(() => tEnergyLevels("high"));
   const [pendingTransitionIndex, setPendingTransitionIndex] = useState(null);
   const [exerciseHistory, setExerciseHistory] = useState({ lastSession: null, personalRecord: null });
   const [exerciseOverrides, setExerciseOverrides] = useState({});
@@ -451,20 +473,23 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
       return exercise;
     }
 
-    return resolveExercise({
-      exerciseId: overrideId,
-      sets: exercise.sets,
-      reps: exercise.reps,
-      rir: exercise.rir,
-      weight: exercise.weight,
-      repsCompleted: exercise.repsCompleted,
-    });
+    return resolveExercise(
+      {
+        exerciseId: overrideId,
+        sets: exercise.sets,
+        reps: exercise.reps,
+        rir: exercise.rir,
+        weight: exercise.weight,
+        repsCompleted: exercise.repsCompleted,
+      },
+      locale,
+    );
   });
 
   const currentExercise = resolvedExercises[exerciseIndex];
   const nextExercise = resolvedExercises[exerciseIndex + 1];
   const basePlanExercise = plan.exercises[exerciseIndex];
-  const availableAlternatives = getSwitchableAlternatives(basePlanExercise.exerciseId);
+  const availableAlternatives = getSwitchableAlternatives(basePlanExercise.exerciseId, locale);
 
   useEffect(() => {
     setExerciseHistory(getExerciseHistory(currentExercise.exerciseId));
@@ -530,12 +555,12 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
       setPhase("training");
       setSaved(false);
       setComments("");
-      setEnergy("Alta");
+      setEnergy(tEnergyLevels("high"));
       setNow(Date.now());
     }, 1600);
 
     return () => window.clearTimeout(timer);
-  }, [phase, pendingTransitionIndex]);
+  }, [phase, pendingTransitionIndex, tEnergyLevels]);
 
   const sessionSummary = useMemo(() => {
     const totalSetsCompleted =
@@ -703,10 +728,10 @@ export default function WorkoutSessionFlow({ plan = pechoTricepsPlan } = {}) {
             onSkipRest={skipRest}
             upcomingLabel={
               setIndex < currentExercise.sets - 1
-                ? `Serie ${setIndex + 2}`
+                ? t("nextSetLabel", { number: setIndex + 2 })
                 : nextExercise
                   ? nextExercise.name
-                  : "Resumen final"
+                  : t("finalSummary")
             }
           />
         ) : null}

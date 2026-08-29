@@ -1,12 +1,35 @@
 import { getExerciseById } from "./exercises/repository";
+import { DIFFICULTY_LEVELS } from "./exercises/catalog/difficulty";
 
-const DIFFICULTY_RANK = { Principiante: 1, Intermedio: 2, Avanzado: 3 };
+const DIFFICULTY_RANK = Object.fromEntries(DIFFICULTY_LEVELS.map((level, index) => [level, index + 1]));
+
+// Plan title/focus per locale, keyed by the stable `slug` — the slug itself
+// is never translated (see docs/11_DECISIONS.md): it's the canonical id used
+// in both the route and this lookup, in every locale.
+const PLAN_TRANSLATIONS = {
+  "pecho-triceps": {
+    es: { title: "Pecho + Tríceps", focus: "Desarrollar pecho superior y brazos." },
+    en: { title: "Chest + Triceps", focus: "Build the upper chest and arms." },
+  },
+  "espalda-biceps": {
+    es: { title: "Espalda + Bíceps", focus: "Construir fuerza de tracción y densidad." },
+    en: { title: "Back + Biceps", focus: "Build pulling strength and back density." },
+  },
+  "hombro-biceps": {
+    es: { title: "Hombro + Bíceps", focus: "Desarrollar amplitud de hombro y fuerza de brazo." },
+    en: { title: "Shoulders + Biceps", focus: "Build shoulder width and arm strength." },
+  },
+};
+
+function getPlanTranslation(slug, locale) {
+  return PLAN_TRANSLATIONS[slug]?.[locale] ?? PLAN_TRANSLATIONS[slug]?.es;
+}
 
 // Exported so a live session can re-resolve a different exerciseId against
 // the SAME day's prescription (sets/reps/rir/weight) when the user switches
 // to an equivalent alternative — reuses this merge instead of duplicating it.
-export function resolveExercise(entry) {
-  const exercise = getExerciseById(entry.exerciseId);
+export function resolveExercise(entry, locale) {
+  const exercise = getExerciseById(entry.exerciseId, locale);
 
   if (!exercise) {
     throw new Error(`Exercise not found in catalog: ${entry.exerciseId}`);
@@ -33,7 +56,6 @@ export function resolveExercise(entry) {
     alternatives: exercise.alternatives,
     anatomyNote: exercise.anatomyNote,
     technique: {
-      title: `${exercise.name}: técnica paso a paso`,
       steps: exercise.instructions,
       mistakes: exercise.commonMistakes,
       cues: exercise.cues,
@@ -41,13 +63,17 @@ export function resolveExercise(entry) {
   };
 }
 
-function resolvePlan(rawPlan) {
+function resolvePlan(rawPlan, locale) {
+  const translation = getPlanTranslation(rawPlan.slug, locale);
+
   return {
-    title: rawPlan.title,
+    title: translation.title,
     slug: rawPlan.slug,
-    focus: rawPlan.focus,
+    focus: translation.focus,
     estimatedDurationMinutes: rawPlan.estimatedDurationMinutes,
-    exercises: [...rawPlan.exercises].sort((a, b) => a.order - b.order).map(resolveExercise),
+    exercises: [...rawPlan.exercises]
+      .sort((a, b) => a.order - b.order)
+      .map((entry) => resolveExercise(entry, locale)),
   };
 }
 
@@ -83,9 +109,7 @@ export function getWorkoutSummary(plan) {
 // `order` is explicit (not implicit array position) because a relational
 // table has no guaranteed row order without a sort column.
 const pechoTricepsRaw = {
-  title: "Pecho + Tríceps",
   slug: "pecho-triceps",
-  focus: "Desarrollar pecho superior y brazos.",
   estimatedDurationMinutes: 75,
   exercises: [
     { order: 1, exerciseId: "press-inclinado-mancuernas", sets: 4, reps: "8 - 10", rir: "2", weight: 24, repsCompleted: 10 },
@@ -98,9 +122,7 @@ const pechoTricepsRaw = {
 };
 
 const espaldaBicepsRaw = {
-  title: "Espalda + Bíceps",
   slug: "espalda-biceps",
-  focus: "Construir fuerza de tracción y densidad.",
   estimatedDurationMinutes: 70,
   exercises: [
     { order: 1, exerciseId: "jalon-al-pecho", sets: 4, reps: "8 - 10", rir: "2", weight: 45, repsCompleted: 10 },
@@ -113,9 +135,7 @@ const espaldaBicepsRaw = {
 };
 
 const hombroBicepsRaw = {
-  title: "Hombro + Bíceps",
   slug: "hombro-biceps",
-  focus: "Desarrollar amplitud de hombro y fuerza de brazo.",
   estimatedDurationMinutes: 65,
   exercises: [
     { order: 1, exerciseId: "press-militar-mancuernas", sets: 4, reps: "8 - 10", rir: "2", weight: 16, repsCompleted: 10 },
@@ -127,7 +147,19 @@ const hombroBicepsRaw = {
   ],
 };
 
-export const pechoTricepsPlan = resolvePlan(pechoTricepsRaw);
-export const espaldaBicepsPlan = resolvePlan(espaldaBicepsRaw);
-export const hombroBicepsPlan = resolvePlan(hombroBicepsRaw);
-export const ALL_PLANS = [pechoTricepsPlan, espaldaBicepsPlan, hombroBicepsPlan];
+const RAW_PLANS_BY_SLUG = {
+  "pecho-triceps": pechoTricepsRaw,
+  "espalda-biceps": espaldaBicepsRaw,
+  "hombro-biceps": hombroBicepsRaw,
+};
+
+const PLAN_SLUGS = Object.keys(RAW_PLANS_BY_SLUG);
+
+export function getPlanBySlug(slug, locale) {
+  const rawPlan = RAW_PLANS_BY_SLUG[slug];
+  return rawPlan ? resolvePlan(rawPlan, locale) : null;
+}
+
+export function getAllPlans(locale) {
+  return PLAN_SLUGS.map((slug) => getPlanBySlug(slug, locale));
+}

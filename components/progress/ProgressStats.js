@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import Surface from "@/components/ui/Surface";
 import { readWorkoutSessions } from "@/utils/workoutStorage";
 
-function formatVolume(value) {
-  return `${value.toLocaleString("es-ES")} kg`;
-}
-
 export default function ProgressStats() {
+  const t = useTranslations("progress.stats");
+  const locale = useLocale();
   const [loaded, setLoaded] = useState(false);
   const [stats, setStats] = useState({ totalSessions: 0, totalVolume: 0, last7Days: 0 });
 
@@ -25,15 +24,15 @@ export default function ProgressStats() {
   }, []);
 
   const items = [
-    { label: "Sesiones totales", value: stats.totalSessions },
-    { label: "Últimos 7 días", value: stats.last7Days },
-    { label: "Volumen total", value: formatVolume(stats.totalVolume) },
+    { label: t("totalSessions"), value: stats.totalSessions },
+    { label: t("last7Days"), value: stats.last7Days },
+    { label: t("totalVolume"), value: `${stats.totalVolume.toLocaleString(locale)} kg` },
   ];
 
   return (
     <Surface className="grid gap-5">
       <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-        Resumen
+        {t("title")}
       </p>
       <div className="grid grid-cols-3 gap-3">
         {items.map((item) => (

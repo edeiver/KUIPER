@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import Surface from "@/components/ui/Surface";
 import { getLoggedExerciseNames, getExerciseProgression } from "@/utils/exerciseHistory";
 import { formatRelativeDate } from "@/utils/formatWorkoutSession";
 
 export default function ExerciseProgressExplorer() {
+  const t = useTranslations("progress.exerciseProgress");
+  const locale = useLocale();
   const [loaded, setLoaded] = useState(false);
   const [names, setNames] = useState([]);
   const [selected, setSelected] = useState("");
@@ -31,10 +34,10 @@ export default function ExerciseProgressExplorer() {
     return (
       <Surface className="grid gap-5">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-          Progreso por ejercicio
+          {t("title")}
         </p>
         <p className="text-sm text-zinc-500">
-          Aún no hay series registradas. Completa un entrenamiento para ver la evolución de peso por ejercicio.
+          {t("empty")}
         </p>
       </Surface>
     );
@@ -44,7 +47,7 @@ export default function ExerciseProgressExplorer() {
     <Surface className="grid gap-5">
       <div className="flex items-center justify-between gap-4">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
-          Progreso por ejercicio
+          {t("title")}
         </p>
         <select
           value={selected}
@@ -71,7 +74,7 @@ export default function ExerciseProgressExplorer() {
               </div>
             </div>
             <p className="text-right text-xs text-zinc-500">
-              {set.reps} reps · {formatRelativeDate(set.date)}
+              {t("setSummary", { reps: set.reps, relativeDate: formatRelativeDate(set.date, locale) })}
             </p>
           </div>
         ))}

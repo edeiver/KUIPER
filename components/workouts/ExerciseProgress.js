@@ -1,6 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export default function ExerciseProgress({ exerciseIndex, totalExercises }) {
+  const t = useTranslations("workouts.session");
   const percent = Math.round(((exerciseIndex + 1) / totalExercises) * 100);
 
   return (
@@ -8,9 +11,9 @@ export default function ExerciseProgress({ exerciseIndex, totalExercises }) {
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-white">
-            {`Ejercicio ${exerciseIndex + 1} de ${totalExercises}`}
+            {t("exerciseOf", { current: exerciseIndex + 1, total: totalExercises })}
           </p>
-          <p className="mt-1 text-sm text-zinc-500">{`${percent} % completado`}</p>
+          <p className="mt-1 text-sm text-zinc-500">{t("percentComplete", { percent })}</p>
         </div>
         <span className="rounded-full bg-[#9fb7ff]/15 px-4 py-2 text-sm font-semibold text-[#c8d5ff]">
           {`${percent} %`}

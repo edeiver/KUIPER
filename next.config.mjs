@@ -1,5 +1,6 @@
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 
@@ -10,4 +11,6 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin("./i18n/request.js");
+
+export default withNextIntl(nextConfig);

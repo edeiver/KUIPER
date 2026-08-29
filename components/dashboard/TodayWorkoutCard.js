@@ -1,8 +1,10 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import PrimaryAction from "@/components/ui/PrimaryAction";
 import Surface from "@/components/ui/Surface";
-import { espaldaBicepsPlan, getWorkoutSummary } from "@/data/workout-plans";
+import { getPlanBySlug, getWorkoutSummary } from "@/data/workout-plans";
+import { getDifficultyLabel } from "@/data/exercises/catalog/difficulty";
 
 // Locale-independent thousands separator — `toLocaleString("es-ES")` silently
 // drops the separator when Node's ICU data doesn't include es-ES (small-icu
@@ -11,16 +13,20 @@ function formatThousands(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-const summary = getWorkoutSummary(espaldaBicepsPlan);
-
-const stats = [
-  { label: "Ejercicios", value: String(summary.exerciseCount) },
-  { label: "Duración", value: `${summary.estimatedDurationMinutes} min` },
-  { label: "Volumen est.", value: `${formatThousands(summary.totalVolume)} kg` },
-  { label: "Dificultad", value: summary.difficulty },
-];
-
 export default function TodayWorkoutCard() {
+  const t = useTranslations("dashboard.todayWorkout");
+  const tList = useTranslations("workouts.list");
+  const locale = useLocale();
+  const plan = getPlanBySlug("espalda-biceps", locale);
+  const summary = getWorkoutSummary(plan);
+
+  const stats = [
+    { label: t("exercises"), value: String(summary.exerciseCount) },
+    { label: t("duration"), value: tList("durationMinutes", { minutes: summary.estimatedDurationMinutes }) },
+    { label: t("estimatedVolume"), value: `${formatThousands(summary.totalVolume)} kg` },
+    { label: t("difficulty"), value: getDifficultyLabel(summary.difficulty, locale) },
+  ];
+
   return (
     <Surface className="relative grid gap-8 overflow-hidden p-7 sm:p-10">
       <div
@@ -30,7 +36,7 @@ export default function TodayWorkoutCard() {
 
       <div className="relative">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9fb7ff]">
-          Hoy toca
+          {t("eyebrow")}
         </p>
         <h2 className="mt-4 text-4xl font-semibold tracking-normal text-white sm:text-6xl">
           {summary.title}
@@ -50,7 +56,7 @@ export default function TodayWorkoutCard() {
       </div>
 
       <PrimaryAction href="/workouts" className="relative min-h-[4.5rem] text-lg">
-        ▶ Comenzar entrenamiento
+        {t("cta")}
       </PrimaryAction>
     </Surface>
   );

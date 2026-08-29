@@ -1,0 +1,242 @@
+{
+  "common": {
+    "back": "Volver",
+    "close": "Cerrar",
+    "comingSoon": "Próximamente",
+    "energyLevels": {
+      "high": "Alta",
+      "medium": "Media",
+      "low": "Baja"
+    },
+    "sessionSummary": "{relativeDate} · {sets} series · {volume} kg"
+  },
+  "nav": {
+    "workouts": "Entrenamientos",
+    "progress": "Progreso",
+    "nutrition": "Nutrición",
+    "settings": "Ajustes"
+  },
+  "home": {
+    "greetingMorning": "Buenos días",
+    "greetingAfternoon": "Buenas tardes",
+    "greetingNight": "Buenas noches",
+    "greetingFallback": "Hola",
+    "greetingWithName": "{greeting}, {name} 👋",
+    "scheduledWorkout": "Entrenamiento programado",
+    "quickAccessTitle": "Accesos rápidos"
+  },
+  "dashboard": {
+    "todayWorkout": {
+      "eyebrow": "Hoy toca",
+      "exercises": "Ejercicios",
+      "duration": "Duración",
+      "estimatedVolume": "Volumen est.",
+      "difficulty": "Dificultad",
+      "cta": "▶ Comenzar entrenamiento"
+    },
+    "stats": {
+      "title": "Resumen",
+      "lastSession": "Última sesión",
+      "noSessions": "Aún no hay sesiones registradas.",
+      "currentWeight": "Peso actual",
+      "averageTime": "Tiempo promedio",
+      "completedSessions": "Sesiones completadas",
+      "weeklyVolume": "Volumen semanal"
+    },
+    "recentActivity": {
+      "title": "Actividad reciente",
+      "empty": "Aún no hay actividad registrada. Completa tu primer entrenamiento para verla aquí."
+    }
+  },
+  "progress": {
+    "eyebrow": "Progreso",
+    "title": "Tu evolución",
+    "subtitle": "Basado únicamente en las sesiones que has completado y guardado.",
+    "stats": {
+      "title": "Resumen",
+      "totalSessions": "Sesiones totales",
+      "last7Days": "Últimos 7 días",
+      "totalVolume": "Volumen total"
+    },
+    "exerciseProgress": {
+      "title": "Progreso por ejercicio",
+      "empty": "Aún no hay series registradas. Completa un entrenamiento para ver la evolución de peso por ejercicio.",
+      "setSummary": "{reps} reps · {relativeDate}"
+    },
+    "sessionHistory": {
+      "title": "Historial de sesiones",
+      "empty": "Aún no hay sesiones registradas. Completa tu primer entrenamiento para verlo aquí."
+    }
+  },
+  "settings": {
+    "eyebrow": "Ajustes",
+    "title": "Tus datos",
+    "backup": {
+      "title": "Copia de seguridad",
+      "description": "Todo tu historial vive únicamente en este navegador. Exporta un archivo periódicamente para no perderlo si borras datos del sitio o cambias de dispositivo.",
+      "export": "Exportar datos",
+      "import": "Importar backup",
+      "exportSuccess": "Backup descargado: {sessions} sesiones, {sets} series.",
+      "importSuccess": "Datos restaurados: {sessions} sesiones, {sets} series. Recargando…",
+      "importError": "No se pudo leer el archivo."
+    }
+  },
+  "workouts": {
+    "list": {
+      "eyebrow": "Entrenamientos",
+      "title": "Semana 1",
+      "subtitle": "Sesiones preparadas para mantener foco, intensidad y progresión.",
+      "week": "Semana 1",
+      "durationMinutes": "{minutes} min",
+      "legPlaceholderTitle": "Pierna",
+      "legPlaceholderFocus": "Base de fuerza, control y volumen."
+    },
+    "detail": {
+      "eyebrow": "Entrenamiento",
+      "estimatedDuration": "Duración estimada",
+      "minutes": "{minutes} minutos",
+      "objective": "Objetivo",
+      "exerciseListTitle": "Lista de ejercicios",
+      "startCta": "Comenzar entrenamiento"
+    },
+    "completed": {
+      "noSession": "Aún no has guardado ningún entrenamiento.",
+      "viewWorkouts": "Ver entrenamientos",
+      "title": "Excelente trabajo.",
+      "duration": "Duración",
+      "sets": "Series",
+      "volume": "Volumen",
+      "calories": "Calorías",
+      "caloriesValue": "{value} kcal",
+      "energyQuestion": "¿Cómo estuvo la energía?",
+      "comments": "Comentarios",
+      "noComments": "Sin comentarios.",
+      "backHome": "Volver al inicio"
+    },
+    "session": {
+      "previewSubtitle": "Una sesión guiada para ejecutar mejor, controlar la intensidad y progresar sin perder técnica.",
+      "todayGoalTitle": "Objetivo de hoy",
+      "todayGoalBody": "Hoy queremos progresar en peso manteniendo la técnica. Si completas todas las series con el RIR indicado, aumenta el peso la próxima semana.",
+      "coachTitle": "Coach",
+      "now": "Ahora",
+      "previewSetReps": "Serie 1 · {reps} reps",
+      "sessionCommandBody": "Usa un peso que te deje repeticiones en reserva según el RIR indicado. La repetición importa menos que el control.",
+      "weight": "Peso",
+      "weightValue": "{weight} kg",
+      "rir": "RIR",
+      "tempo": "Tempo",
+      "startTraining": "Comenzar entrenamiento",
+      "viewPlan": "Ver plan de series",
+      "back": "Volver",
+      "switchExercise": "Cambiar ejercicio",
+      "exerciseOf": "Ejercicio {current} de {total}",
+      "percentComplete": "{percent} % completado",
+      "exerciseCountPercent": "Ejercicio {current} de {total} · {percent}%",
+      "viewExercise": "Vista del ejercicio",
+      "coachIndication": "Indicación del coach",
+      "history": "Historial",
+      "lastTime": "Última vez",
+      "bestRecord": "Mejor marca",
+      "noHistory": "Aún no has hecho este ejercicio antes.",
+      "lastSessionSummary": "{relativeDate} · {weight} kg × {reps} reps",
+      "recordSummary": "{weight} kg × {reps} reps",
+      "todaySuggestion": "Sugerencia para hoy",
+      "suggestedWeight": "Peso sugerido: {weight} kg",
+      "series": "Series",
+      "setOf": "Serie {current} de {total}",
+      "repsTarget": "Reps obj.",
+      "reps": "Reps",
+      "completeSet": "Completar serie",
+      "setCompleted": "Serie completada",
+      "repsCompleted": "{count} repeticiones",
+      "excellent": "Excelente.",
+      "rest": "Descanso",
+      "nextSet": "Próxima serie",
+      "coachTip": "Consejo del coach",
+      "addThirtySeconds": "+30 segundos",
+      "skipRest": "Omitir descanso",
+      "ready": "Listo",
+      "restTimerTitle": "Temporizador de descanso",
+      "restTimerBody": "Recupera respiración, prepara la siguiente serie y mantén el objetivo de intensidad sin acelerar el ritmo.",
+      "nextSetLabel": "Serie {number}",
+      "finalSummary": "Resumen final",
+      "nextExercise": "Siguiente ejercicio",
+      "objectiveLabel": "Objetivo: {objective}",
+      "sessionCompleted": "Entrenamiento completado",
+      "greatJob": "Excelente trabajo.",
+      "savedLocally": "La sesión quedó guardada localmente en el dispositivo.",
+      "totalTime": "Tiempo total",
+      "totalSets": "Series realizadas",
+      "totalVolume": "Volumen total",
+      "totalVolumeValue": "{volume} kg",
+      "completedExercises": "Ejercicios completados",
+      "calories": "Calorías",
+      "caloriesPlaceholder": "-- kcal",
+      "energyStatus": "Estado de energía",
+      "comments": "Comentarios",
+      "commentsPlaceholder": "Añade sensaciones, notas o ajustes para la próxima sesión.",
+      "saveWorkout": "Guardar entrenamiento",
+      "workoutSaved": "Entrenamiento guardado",
+      "switcher": {
+        "eyebrow": "Cambiar ejercicio",
+        "title": "Elige una alternativa equivalente",
+        "close": "Cerrar",
+        "empty": "No hay alternativas registradas todavía para este ejercicio.",
+        "keepOriginal": "Volver al ejercicio original"
+      },
+      "technique": {
+        "eyebrow": "Técnica",
+        "titleSuffix": "{name}: técnica paso a paso",
+        "realImage": "Imagen real",
+        "gif": "GIF / animación",
+        "video": "Video demostrativo",
+        "stepByStep": "Paso a paso",
+        "commonMistakes": "Errores comunes",
+        "checklistTitle": "Checklist antes de iniciar",
+        "trainerTips": "Consejos del entrenador"
+      },
+      "myTraining": {
+        "eyebrow": "Mi entrenamiento",
+        "title": "Series de trabajo",
+        "series": "Serie",
+        "reps": "Reps",
+        "rir": "RIR",
+        "rest": "Descanso",
+        "restValue": "{seconds} s",
+        "weight": "Peso",
+        "weightValue": "{weight} kg",
+        "current": "Actual",
+        "next": "Siguiente",
+        "pending": "Pendiente",
+        "notes": "Notas",
+        "startRest": "Iniciar descanso",
+        "nextExercise": "Siguiente ejercicio"
+      },
+      "anatomy": {
+        "eyebrow": "Anatomía",
+        "title": "Por qué está en el programa",
+        "anatomyImage": "Imagen anatómica",
+        "primaryMuscle": "Músculo principal",
+        "secondaryMuscles": "Músculos secundarios"
+      },
+      "readiness": {
+        "technique": "Técnica",
+        "controlled": "Controlada",
+        "range": "Rango",
+        "intensity": "Intensidad",
+        "rirValue": "RIR {rir}",
+        "next": "Siguiente",
+        "secondsValue": "{seconds} s"
+      },
+      "setStatus": {
+        "completed": "✔ Hecha",
+        "active": "En curso",
+        "pending": "Pendiente"
+      },
+      "dock": {
+        "summary": "Serie 1 · {weight} kg · RIR {rir}",
+        "complete": "Completar"
+      }
+    }
+  }
+}
