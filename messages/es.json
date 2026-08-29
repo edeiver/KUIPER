@@ -142,6 +142,14 @@
       "recordSummary": "{weight} kg × {reps} reps",
       "todaySuggestion": "Sugerencia para hoy",
       "suggestedWeight": "Peso sugerido: {weight} kg",
+      "weightSuggestion": {
+        "usePlanned": "Usa el peso planificado.",
+        "hold": "La última vez no llegaste al mínimo de repeticiones, pero antes ibas bien. Mantén el mismo peso hoy y ajusta la técnica.",
+        "holdOrReduce": "Las últimas dos veces no llegaste al mínimo de repeticiones. Reduce el peso hoy.",
+        "increase": "Superaste el objetivo de repeticiones la última vez. Prueba con un poco más de peso hoy.",
+        "increaseConfirmed": "Superaste el objetivo de repeticiones las últimas dos veces. Sube el peso con confianza hoy.",
+        "maintainAndPush": "La última vez estuviste dentro del rango. Mantén el mismo peso e intenta una repetición más."
+      },
       "series": "Series",
       "setOf": "Serie {current} de {total}",
       "repsTarget": "Reps obj.",
@@ -177,6 +185,9 @@
       "commentsPlaceholder": "Añade sensaciones, notas o ajustes para la próxima sesión.",
       "saveWorkout": "Guardar entrenamiento",
       "workoutSaved": "Entrenamiento guardado",
+      "insightButton": "Insight de la IA",
+      "insightLoading": "Analizando tu sesión…",
+      "insightError": "No se pudo generar el insight. Intenta de nuevo.",
       "switcher": {
         "eyebrow": "Cambiar ejercicio",
         "title": "Elige una alternativa equivalente",

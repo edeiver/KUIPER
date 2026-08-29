@@ -7,6 +7,7 @@
 - JavaScript
 - Tailwind CSS
 - next-intl (ES/EN locale routing and translations — see `docs/11_DECISIONS.md`)
+- `@anthropic-ai/sdk` (Claude API, server-side only — see `docs/11_DECISIONS.md`)
 - npm
 
 ## Planned (long-term target)

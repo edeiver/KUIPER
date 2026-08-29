@@ -226,7 +226,7 @@ function TrainingScreen({
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
             {t("todaySuggestion")}
           </p>
-          <p className="text-base font-semibold text-white">{weightSuggestion.message}</p>
+          <p className="text-base font-semibold text-white">{t(`weightSuggestion.${weightSuggestion.action}`)}</p>
           {weightSuggestion.suggestedWeight != null ? (
             <p className="text-sm text-[#c8d5ff]">
               {t("suggestedWeight", { weight: weightSuggestion.suggestedWeight })}
@@ -373,7 +373,18 @@ function TransitionScreen({ nextExercise }) {
   );
 }
 
-function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyChange, onSave, saved }) {
+function WorkoutSummary({
+  summary,
+  comments,
+  energy,
+  onCommentsChange,
+  onEnergyChange,
+  onSave,
+  saved,
+  insightStatus,
+  insightText,
+  onRequestInsight,
+}) {
   const t = useTranslations("workouts.session");
   const tEnergy = useTranslations("common.energyLevels");
   const energyLevels = ["high", "medium", "low"];
@@ -435,6 +446,32 @@ function WorkoutSummary({ summary, comments, energy, onCommentsChange, onEnergyC
       >
         {saved ? t("workoutSaved") : t("saveWorkout")}
       </button>
+
+      {saved ? (
+        <div className="rounded-[28px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c8d5ff]">
+            {t("insightButton")}
+          </p>
+          {insightStatus === "idle" ? (
+            <button
+              type="button"
+              onClick={onRequestInsight}
+              className="mt-4 min-h-11 rounded-full border border-white/10 bg-white/[0.06] px-4 text-sm font-semibold text-zinc-200 transition hover:bg-white/[0.1]"
+            >
+              {t("insightButton")}
+            </button>
+          ) : null}
+          {insightStatus === "loading" ? (
+            <p className="mt-4 text-sm text-zinc-300">{t("insightLoading")}</p>
+          ) : null}
+          {insightStatus === "success" ? (
+            <p className="mt-4 text-sm leading-6 text-zinc-200">{insightText}</p>
+          ) : null}
+          {insightStatus === "error" ? (
+            <p className="mt-4 text-sm text-red-400">{t("insightError")}</p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -454,6 +491,8 @@ export default function WorkoutSessionFlow({ plan: planProp } = {}) {
   const [sessionStartedAt, setSessionStartedAt] = useState(null);
   const [setStartedAt, setSetStartedAt] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [insightStatus, setInsightStatus] = useState("idle");
+  const [insightText, setInsightText] = useState("");
   const [comments, setComments] = useState("");
   const [energy, setEnergy] = useState(() => tEnergyLevels("high"));
   const [pendingTransitionIndex, setPendingTransitionIndex] = useState(null);
@@ -696,6 +735,44 @@ export default function WorkoutSessionFlow({ plan: planProp } = {}) {
     setSaved(true);
   };
 
+  const requestInsight = async () => {
+    setInsightStatus("loading");
+
+    try {
+      const response = await fetch("/api/insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          locale,
+          workout: {
+            title: plan.title,
+            totalTime: sessionSummary.totalTime,
+            totalSets: sessionSummary.totalSets,
+            totalVolume: sessionSummary.totalVolume,
+          },
+          exercises: resolvedExercises.map((exercise) => ({
+            name: exercise.name,
+            sets: exercise.sets,
+            repsCompleted: exercise.repsCompleted,
+            weight: exercise.weight,
+          })),
+          energy,
+          comments,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("insight_request_failed");
+      }
+
+      const data = await response.json();
+      setInsightText(data.insight);
+      setInsightStatus("success");
+    } catch {
+      setInsightStatus("error");
+    }
+  };
+
   if (mode === "preview") {
     return (
       <AppShell>
@@ -774,6 +851,9 @@ export default function WorkoutSessionFlow({ plan: planProp } = {}) {
         onEnergyChange={setEnergy}
         onSave={saveWorkout}
         saved={saved}
+        insightStatus={insightStatus}
+        insightText={insightText}
+        onRequestInsight={requestInsight}
       />
     </AppShell>
   );

@@ -142,6 +142,14 @@
       "recordSummary": "{weight} kg × {reps} reps",
       "todaySuggestion": "Suggestion for today",
       "suggestedWeight": "Suggested weight: {weight} kg",
+      "weightSuggestion": {
+        "usePlanned": "Use the planned weight.",
+        "hold": "You missed the minimum reps last time, but you were on track before that. Keep the same weight today and focus on technique.",
+        "holdOrReduce": "You've missed the minimum reps the last two times. Reduce the weight today.",
+        "increase": "You beat the target reps last time. Try a bit more weight today.",
+        "increaseConfirmed": "You've beaten the target reps the last two times. Increase the weight with confidence today.",
+        "maintainAndPush": "You stayed within range last time. Keep the same weight and aim for one more rep."
+      },
       "series": "Sets",
       "setOf": "Set {current} of {total}",
       "repsTarget": "Target reps",
@@ -177,6 +185,9 @@
       "commentsPlaceholder": "Add how you felt, notes, or adjustments for next session.",
       "saveWorkout": "Save workout",
       "workoutSaved": "Workout saved",
+      "insightButton": "AI insight",
+      "insightLoading": "Analyzing your session…",
+      "insightError": "Couldn't generate the insight. Try again.",
       "switcher": {
         "eyebrow": "Switch exercise",
         "title": "Pick an equivalent alternative",

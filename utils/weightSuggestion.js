@@ -9,12 +9,17 @@
 // stays the same):
 //   - `exercise`: today's prescription for this exercise (target reps, rir,
 //     planned weight, ...).
-//   - `history`: what we know from the past for this exercise (currently
-//     `{ lastSession, personalRecord }` from getExerciseHistory — could later
-//     carry a full multi-session trend).
+//   - `history`: what we know from the past for this exercise — `lastSession`,
+//     `personalRecord`, and `recentSessions` (up to the last 3 distinct
+//     sessions, most recent first) from getExerciseHistory.
 //   - `currentPlan`: the whole workout session's context. Not used by this
 //     MVP algorithm, reserved for future signals — accumulated fatigue,
 //     position within the session, deload weeks, AI Coach input.
+//
+// Returns `{ action, suggestedWeight }` — no message text. `action` is a
+// translation key (see messages/{es,en}.json under
+// `workouts.session.weightSuggestion`) so the same real numbers read
+// correctly in whichever locale the session is running in.
 //
 // Known limitation (MVP): the original spec asks to also check "RIR
 // esperado", but `appendWorkoutSet` never logs the RIR actually used per
@@ -24,6 +29,7 @@
 // be added inside this function without touching the signature.
 
 const WEIGHT_INCREMENT_RATIO = 0.05;
+const WEIGHT_INCREMENT_RATIO_CONFIRMED = 0.1;
 const WEIGHT_DECREMENT_RATIO = 0.05;
 
 function parseRepRange(reps) {
@@ -49,45 +55,50 @@ export function getWeightSuggestion({ exercise, history, currentPlan }) {
 
   const plannedWeight = exercise.weight;
   const lastSession = history?.lastSession ?? null;
+  const recentSessions = history?.recentSessions ?? [];
 
   if (!lastSession) {
-    return {
-      action: "use-planned",
-      message: "Usa el peso planificado.",
-      suggestedWeight: plannedWeight,
-    };
+    return { action: "usePlanned", suggestedWeight: plannedWeight };
   }
 
   const range = parseRepRange(exercise.reps);
 
   if (!range) {
-    return {
-      action: "use-planned",
-      message: "Usa el peso planificado.",
-      suggestedWeight: plannedWeight,
-    };
+    return { action: "usePlanned", suggestedWeight: plannedWeight };
   }
 
-  if (lastSession.reps < range.min) {
-    return {
-      action: "hold-or-reduce",
-      message:
-        "La última vez no llegaste al mínimo de repeticiones. Considera mantener el peso o reducirlo un poco hoy.",
-      suggestedWeight: roundToHalf(lastSession.weight * (1 - WEIGHT_DECREMENT_RATIO)),
-    };
+  const missedMin = (session) => session.reps < range.min;
+  const hitMax = (session) => session.reps >= range.max;
+
+  // A single off day is noise; the same pattern twice in a row across real,
+  // distinct sessions is a trend worth acting on more decisively.
+  const confirmedAcross = (predicate) =>
+    recentSessions.length >= 2 && recentSessions.slice(0, 2).every(predicate);
+
+  if (missedMin(lastSession)) {
+    if (confirmedAcross(missedMin)) {
+      return {
+        action: "holdOrReduce",
+        suggestedWeight: roundToHalf(lastSession.weight * (1 - WEIGHT_DECREMENT_RATIO)),
+      };
+    }
+
+    return { action: "hold", suggestedWeight: lastSession.weight };
   }
 
-  if (lastSession.reps >= range.max) {
+  if (hitMax(lastSession)) {
+    if (confirmedAcross(hitMax)) {
+      return {
+        action: "increaseConfirmed",
+        suggestedWeight: roundToHalf(lastSession.weight * (1 + WEIGHT_INCREMENT_RATIO_CONFIRMED)),
+      };
+    }
+
     return {
       action: "increase",
-      message: "Superaste el objetivo de repeticiones la última vez. Prueba con un poco más de peso hoy.",
       suggestedWeight: roundToHalf(lastSession.weight * (1 + WEIGHT_INCREMENT_RATIO)),
     };
   }
 
-  return {
-    action: "maintain-and-push",
-    message: "La última vez estuviste dentro del rango. Mantén el mismo peso e intenta una repetición más.",
-    suggestedWeight: lastSession.weight,
-  };
+  return { action: "maintainAndPush", suggestedWeight: lastSession.weight };
 }
