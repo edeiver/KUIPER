@@ -4,7 +4,7 @@
 - Exercise DB — Planned
 - Progress — MVP shipped (totals, per-exercise weight progression, session history)
 - Settings — local data backup (export/import)
-- AI session insight — shipped (`app/api/insight`, Haiku 4.5, one call per saved session)
+- AI session insight — paused (`app/api/insight`, Haiku 4.5; switched off via `INSIGHTS_ENABLED` in `utils/featureFlags.js` until tests, storage and real set logging are in place — see `PLAN.md`)
 - AI Coach (roadmap module: ongoing programming/conversation) — Planned, not started
 - Nutrition
 

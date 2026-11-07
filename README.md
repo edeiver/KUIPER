@@ -17,7 +17,7 @@ Training seriously today means choosing between a generic logger (no technique, 
 - **Progress**: total sessions, cumulative volume, and per-exercise weight progression (`app/progress`), computed entirely from real logged sets.
 - **Local backup** (`app/settings`): export/import the full workout history as JSON, since everything lives client-side.
 - **Full ES/EN i18n** via `next-intl`: locale-prefixed routing (`/es`, `/en`), a language switcher, and the entire exercise catalog (names, technique steps, mistakes, cues, alternatives) translated — not just UI chrome. See `docs/11_DECISIONS.md` for how translations sit alongside the relational tables without duplicating structural data.
-- **AI session insight** (`app/api/insight`): after saving a workout, one optional, user-initiated call to the Claude API (Haiku 4.5) turns that session's real logged data — sets, volume, energy, comments — into a short coaching takeaway. Server-side only (`ANTHROPIC_API_KEY` never reaches the client); grounded strictly in the data sent, per the app's no-invented-data rule.
+- **AI session insight — currently paused** (`app/api/insight`): switched off via `INSIGHTS_ENABLED` in `utils/featureFlags.js` until the product has tests, reliable storage and real set logging (see `PLAN.md`). When enabled: after saving a workout, one optional, user-initiated call to the Claude API (Haiku 4.5) turns that session's real logged data — sets, volume, energy, comments — into a short coaching takeaway. Server-side only (`ANTHROPIC_API_KEY` never reaches the client); grounded strictly in the data sent, per the app's no-invented-data rule.
 - Versioned local persistence (`kuiper.workout.*.v1`) with no auth — the AI insight route is the only server-side code in the app so far (see `docs/05_TECH_STACK.md`).
 
 ## What's missing (by design, not oversight)
@@ -34,7 +34,7 @@ Nutrition and ChatGPT sync are planned but not implemented — see `docs/03_PROD
 
 ```bash
 npm install
-cp .env.example .env.local   # add your ANTHROPIC_API_KEY to use the AI insight feature (optional)
+cp .env.example .env.local   # add your ANTHROPIC_API_KEY to use the AI insight feature (optional, currently paused)
 npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run lint

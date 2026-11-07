@@ -68,3 +68,17 @@
 
 - `components/dashboard/HomeHero.js` had a hardcoded name (`"Edeiver"`, the founder's own name — see `docs/07_HERCULES.md`) baked into every greeting, on every device, for every user. That's a hardcoded personal detail masquerading as a real feature — not a "no invented data" violation on a screen the user reads *from*, but the same failure mode in reverse: showing every visitor data that isn't theirs.
 - `utils/userProfile.js` stores the name in `localStorage` (`kuiper.user.name.v1`). `HomeHero` asks for it once, inline, the first time it renders with none saved, and uses it from then on — no separate onboarding flow or modal, consistent with how the rest of the app avoids ceremony for a single piece of state.
+
+### Upgrade Next.js 15.5.19 → 15.5.29 (approved 2026-11-07)
+
+- The deployed app was on `next` 15.5.19, which `npm audit` flagged with 14 advisories in Next's own code (critical: Image Optimization RCE and Windows-hosted RCE; high: Server Actions DoS and SSRF). 15.5.29 is the latest 15.x release (npm `backport` tag) and resolves all of them.
+- Stayed on the 15.5 line rather than moving to Next 16 (`latest` is 16.4.5): a patch upgrade keeps the change small and reversible while the project has no automated tests. Next 15 now gets security releases only, so moving to 16 is a separate, future decision.
+- Only `next` was upgraded. `eslint-config-next` stays at 15.5.19 — its peer requirements don't depend on the Next version, and lint passes.
+- Known remaining `npm audit` entries, all transitive: `postcss` 8.4.31 (pinned inside every Next 15.x, only fixable by Next 16), `sharp` 0.34.5 (Next accepts `^0.34.3 || ^0.35.5`; used only by Image Optimization, which the app doesn't use), and `source-map-js` (via Tailwind, build-time). Left as-is pending a separate decision.
+- Before upgrading, a GitHub search found no issues reported against 15.5.29 (released 2026-11-03). A production build on both versions returned identical status and rendering for 18 routes, including the pre-existing behavior that unknown workout slugs serve Next's bare error document with a 404.
+
+### Pause AI session insights (approved 2026-11-07)
+
+- The AI session insight (see above) is paused until the product is in better shape: tests, reliable data storage, and set logging that records what the user actually lifted. Today every logged set stores the plan's prescribed weight and reps, so an insight built on it would contradict the "never invent data" principle in `docs/VISION.md`.
+- It also removes cost exposure: `/api/insight` is deployed with no authentication or rate limit.
+- Paused with a feature flag (`utils/featureFlags.js`, `INSIGHTS_ENABLED = false`) rather than by deleting code: the route returns 503 before reading the body or calling Anthropic, and the summary card doesn't render. A plain constant was chosen over an environment variable so server and client always agree and no Vercel setting needs to stay in sync. Re-enabling is a one-line change, planned for once login protects the endpoint and real data feeds it (see `PLAN.md`).

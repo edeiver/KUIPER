@@ -10,6 +10,9 @@
 - Docs: README reescrito en inglés reflejando el estado real del producto, con sección sobre el proceso de desarrollo con Claude Code.
 - Fix/mejora: `utils/weightSuggestion.js` ahora considera hasta 3 sesiones reales recientes (no solo la última) para distinguir un mal día puntual de una tendencia real antes de subir o bajar el peso sugerido. De paso se corrigió que el mensaje de sugerencia estaba hardcodeado en español — ahora se traduce según el idioma activo, igual que el resto de la sesión.
 - Fix: el saludo del dashboard (`HomeHero`) tenía el nombre del fundador hardcodeado para cualquier usuario. Ahora se pregunta una sola vez y se guarda en `localStorage` (`utils/userProfile.js`).
+- Chore: `next` actualizado de 15.5.19 a 15.5.29 para incorporar los parches de seguridad de la línea 15.5. Ver `docs/11_DECISIONS.md`.
+- Change: el insight de IA post-entrenamiento queda en pausa mediante `INSIGHTS_ENABLED` (`utils/featureFlags.js`). La tarjeta no se muestra y `/api/insight` responde 503 sin llamar a Anthropic; no se borró código. Ver `docs/11_DECISIONS.md`.
+- Docs: `PLAN.md` con el plan de mejora vigente y `CLAUDE.md` con las reglas de trabajo del proyecto.
 
 ## v0.1.0
 Initial starter kit.
