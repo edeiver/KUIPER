@@ -23,3 +23,13 @@ Checks that can't be automated, such as how a screen feels mid-workout, go in th
 
 - All tests and criteria pass, and the actual results have been shown, including anything that failed or was skipped.
 - The owner confirms it. Work can be reported as ready, but only the owner calls it done.
+
+## Pull requests
+
+1. After the owner approves a task's changes, push its branch and open a PR. Only the owner merges.
+2. The PR description includes:
+   - **Summary:** what changed and why, with one line per commit.
+   - **Tests:** which tests were added or changed, the result of running them, and anything marked as a known failure, with the reason.
+   - **Acceptance criteria:** every criterion from the approved spec, as a checklist. A box is checked only if it was verified, with how it was verified. Unchecked boxes say why, and who checks them.
+   - **Known issues:** anything accepted for now, and why.
+   - **Out of scope:** what this PR deliberately doesn't touch.
