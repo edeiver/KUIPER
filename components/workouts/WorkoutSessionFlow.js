@@ -24,6 +24,7 @@ import { getWeightSuggestion } from "@/utils/weightSuggestion";
 import { formatRelativeDate } from "@/utils/formatWorkoutSession";
 import { getPlanBySlug, resolveExercise } from "@/data/workout-plans";
 import { getSwitchableAlternatives } from "@/data/exercises/repository";
+import { INSIGHTS_ENABLED } from "@/utils/featureFlags";
 
 function formatSeconds(value) {
   const minutes = Math.floor(value / 60);
@@ -447,7 +448,7 @@ function WorkoutSummary({
         {saved ? t("workoutSaved") : t("saveWorkout")}
       </button>
 
-      {saved ? (
+      {INSIGHTS_ENABLED && saved ? (
         <div className="rounded-[28px] border border-[#9fb7ff]/20 bg-[#9fb7ff]/10 p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#c8d5ff]">
             {t("insightButton")}

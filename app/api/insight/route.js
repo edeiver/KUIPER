@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { INSIGHTS_ENABLED } from "@/utils/featureFlags";
 
 // Server-only: ANTHROPIC_API_KEY is read from the environment and never sent
 // to the client. Requires ANTHROPIC_API_KEY in .env.local (see .env.example).
@@ -35,6 +36,11 @@ ${exerciseLines}`;
 }
 
 export async function POST(request) {
+  // Paused feature: answer before reading the body or calling Anthropic.
+  if (!INSIGHTS_ENABLED) {
+    return NextResponse.json({ error: "insights_disabled" }, { status: 503 });
+  }
+
   let body;
 
   try {
